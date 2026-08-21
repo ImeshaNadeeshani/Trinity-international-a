@@ -1,0 +1,41 @@
+:root {
+  --primary-green: #006b3c;
+  --dark-green: #004d36;
+  --deep-green: #003b2b;
+  --medium-green: #138a50;
+  --light-green: #eaf7ef;
+  --soft-green: #f6fbf8;
+  --white: #ffffff;
+  --heading: #07372b;
+  --body-text: #40544c;
+  --muted-text: #73827c;
+  --border: #d9e7df;
+  --container-width: 1220px;
+  --section-spacing: 92px;
+  --shadow: 0 16px 45px rgba(0, 77, 54, 0.1);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { color: var(--body-text); background: var(--white); line-height: 1.6; }
+body, button, a { -webkit-tap-highlight-color: transparent; }
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+.app { min-height: 100vh; overflow: hidden; }
+.container { width: min(calc(100% - 64px), var(--container-width)); margin-inline: auto; }
+.section { padding: var(--section-spacing) 0; }
+h1, h2, h3, p { margin: 0; }
+h1, h2, h3 { font-family: 'Manrope', Arial, sans-serif; color: var(--heading); }
+.button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 50px; padding: 13px 21px; border: 1px solid transparent; border-radius: 10px; font-weight: 700; font-size: 0.88rem; transition: transform .22s ease, background .22s ease, box-shadow .22s ease, color .22s ease; }
+.button:hover { transform: translateY(-2px); }
+.button-primary { color: var(--white); background: var(--primary-green); box-shadow: 0 9px 18px rgba(0, 107, 60, .17); }
+.button-primary:hover { background: var(--dark-green); box-shadow: 0 12px 22px rgba(0, 77, 54, .23); }
+.button-outline { color: var(--primary-green); background: var(--white); border-color: #7db49a; }
+.button-outline:hover { background: var(--light-green); }
+.button-light { color: var(--dark-green); background: var(--white); }
+.button-light:hover { background: #dff5e7; }
+.section-title { max-width: 690px; margin: 0 auto 42px; text-align: center; }
+.section-title h2 { font-size: clamp(1.75rem, 3vw, 2.45rem); line-height: 1.14; letter-spacing: -0.02em; }
+.section-title > p:last-child { max-width: 620px; margin: 13px auto 0; color: var(--muted-text); font-size: .98rem; }
+.section-eyebrow, .eyebrow { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 13px; color: var(--primary-green); font-size: .74rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+@media (max-width: 768px) { .container { width: min(calc(100% - 36px), var(--container-width)); } .section { padding: 65px 0; } }

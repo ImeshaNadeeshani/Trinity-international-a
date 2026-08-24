@@ -1,5 +1,5 @@
 import { Camera, CirclePlay, Link as LinkIcon, Mail, MapPin, Phone } from 'lucide-react'
-import logoAsset from '../assets/logo/trinity-footer-logo.jpeg'
+import logoAsset from '../assets/logo/trinity-official-logo.jpeg'
 import '../styles/footer.css'
 
 function Footer() {

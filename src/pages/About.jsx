@@ -18,6 +18,13 @@ import pasterHeshan from '../assets/images/paster-heshan-rubera.png'
 import ananthiVythilingam from '../assets/images/ananthi-vythilingam.jpeg'
 import antoinetteMichelle from '../assets/images/antoinette-michelle.jpeg'
 import imeshaNadeeshani from '../assets/images/imesha-nadeeshani.png'
+import chathurikaSewwandi from '../assets/images/chathurika-sewwandi.png'
+import richieWeerakoon from '../assets/images/richie-weerakoon.png'
+import manishaRatnayake from '../assets/images/manisha-ratnayake.png'
+import nishanRubera from '../assets/images/nishan-rubera.png'
+import shenalJerusha from '../assets/images/shenal-jerusha.png'
+import chamuthSenura from '../assets/images/chamuth-senura.png'
+import sepalikaSewwandi from '../assets/images/sepalika-sewwandi.png'
 import officeReception from '../assets/images/trinity-office-reception.png'
 import '../styles/about.css'
 
@@ -37,13 +44,20 @@ const metrics = [
 
 const leaders = {
   board: [
-    { name: 'Paster Heshan Rubera', displayName: 'Paster Heshan Rubera', role: 'CEO', image: pasterHeshan },
+    { name: 'Heshan Rubera', displayName: 'Heshan Rubera', role: 'CEO', image: pasterHeshan },
+    { name: 'Manisha Ratnayake', displayName: 'Manisha Ratnayake', role: 'Director of HR & Legal', image: manishaRatnayake },
   ],
   team: [
     { name: 'Ananthi Vythilingam', displayName: 'Ananthi Vythilingam', role: 'Head of Projects', image: ananthiVythilingam },
     { name: 'Stefan Shanmugarajah', displayName: 'Stefan Shanmugarajah', role: 'Asst. Manager', image: stefanShanmugarajah },
     { name: 'Antoinette Yvonne Michelle', displayName: 'Antoinette Yvonne Michelle', role: 'Executive', image: antoinetteMichelle },
+    { name: 'Chathurika Sewwandi', displayName: 'Chathurika Sewwandi', role: 'Senior Executive – Administration & Operations', image: chathurikaSewwandi },
+    { name: 'Richie Weerakoon', displayName: 'Richie Weerakoon', role: 'Assistant Manager – Human Resources', image: richieWeerakoon },
+    { name: 'Nishan Rubera', displayName: 'Nishan Rubera', role: 'Manager', image: nishanRubera },
+    { name: 'Shenal Jerusha', displayName: 'Shenal Jerusha', role: 'Digital Marketing & Content Specialist', image: shenalJerusha },
     { name: 'Imesha Nadeeshani', displayName: 'Imesha Nadeeshani', role: 'Software Developer & Data Analyst', image: imeshaNadeeshani },
+    { name: 'Chamuth Senura', displayName: 'Chamuth Senura', role: 'Software Developer', image: chamuthSenura },
+    { name: 'Sepalika Sewwandi', displayName: 'Sepalika Sewwandi', role: 'HR Assistant', image: sepalikaSewwandi },
   ],
 }
 

@@ -23,6 +23,7 @@ function App() {
           <Route path="/destinations/:countrySlug" element={<DestinationCountry />} />
           <Route path="/services" element={<Home />} />
           <Route path="/contact" element={<ContactUs />} />
+          <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/success-stories" element={<SuccessStories />} />
           <Route path="/findmyuni" element={<FindMyUni />} />
           <Route path="*" element={<Destinations />} />

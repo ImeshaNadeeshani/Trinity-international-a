@@ -3,6 +3,20 @@ import {
   BadgeCheck, ExternalLink, Quote, Star,
 } from 'lucide-react'
 import sriLankanStudentsHero from '../assets/images/success-stories-sri-lankan-students.png'
+import sangeethPhoto from '../assets/images/success-stories/sangeeth-amirthanathan.png'
+import niroshaMaheshanPhoto from '../assets/images/success-stories/nirosha-maheshan.png'
+import imanthiPhoto from '../assets/images/success-stories/imanthi-jayakody.png'
+import danuraPhoto from '../assets/images/success-stories/danura-jayakody.png'
+import antaneetaPhoto from '../assets/images/success-stories/antaneeta-fernando.png'
+import supunPhoto from '../assets/images/success-stories/supun-jayawardana.png'
+import silunaPhoto from '../assets/images/success-stories/siluna-nimhan.png'
+import kanchanaPhoto from '../assets/images/success-stories/kanchana-weerasekara.png'
+import roshanPhoto from '../assets/images/success-stories/roshan-bibi.png'
+import vinothanPhoto from '../assets/images/success-stories/vinothan-sundaralingam.png'
+import tharshikaPhoto from '../assets/images/success-stories/tharshika-vathanakumar.png'
+import jansenideviPhoto from '../assets/images/success-stories/jansenidevi-kuhanesan.png'
+import devniPhoto from '../assets/images/success-stories/devni-dissanayaka.png'
+import ruwaisdeenPhoto from '../assets/images/success-stories/mohamed-ruwaisdeen.png'
 import '../styles/success-stories.css'
 
 /* Previous manually entered stories removed in favour of sourced Google reviews.
@@ -23,7 +37,7 @@ const stories = [
 
 const googleReviewsUrl = 'https://www.google.com/search?kgmid=/g/11fkt7sg82&hl=en-LK&q=Trinity+International-Study+Abroad+Education+Consultant#lrd=0x3ae259892e733193:0x11b72fcb12356351,1,,,,'
 
-const googleReviews = [
+const baseGoogleReviews = [
   { name: 'Sangeeth Amirthanathan', initials: 'SA', quote: 'I am incredibly grateful to Trinity International for their excellent guidance in securing my student visa for the University of Hertfordshire in the UK. Every step of the application process was explained carefully, making it smooth.', rating: 5, date: 'A year ago' },
   { name: 'Anosha Rangalla', initials: 'AR', quote: 'Trinity did an amazing job within a short period of time for my student visa in Canada. I would like to admire Michelle from Trinity, who carefully reviewed my profile and supported me even in selecting a programme.', rating: 5, date: '2 years ago' },
   { name: 'Sachi Rodrigo', initials: 'SR', quote: 'I am writing to express my heartfelt gratitude and complete satisfaction with Trinity International and its team.', rating: 5, date: '2 years ago' },
@@ -43,6 +57,30 @@ const googleReviews = [
   { name: 'Kanchana Weerasekara', initials: 'KW', quote: 'I had a fantastic experience with Trinity International. They were incredibly supportive and methodical throughout the entire process, making everything run smoothly and efficiently.', rating: 5, date: 'A year ago' },
   { name: 'Roshan', initials: 'RO', quote: 'I had a very good experience with this agency for my student visa process. I had very little time to apply, and I received my visa within one week through the standard application. Ani handled my case.', rating: 4, date: '10 months ago' },
 ]
+
+const studentDetails = {
+  'Sangeeth Amirthanathan': { photo: sangeethPhoto, university: 'University of Hertfordshire', program: 'MSc Artificial Intelligence and Robotics', intake: 'January 2025' },
+  'Imanthi Jayakody': { displayName: 'Imanthi Chandramali Jayakody', photo: imanthiPhoto, university: 'New York Institute of Technology, Vancouver Campus', program: 'Master of Business Administration', intake: 'January 2025' },
+  'Danura Jayakody': { displayName: 'Danura Ishara Jayakody', photo: danuraPhoto, university: 'University Canada West', program: 'Master of Business Administration', intake: 'September 2024' },
+  'Antaneeta Fernando': { displayName: 'Antaneeta Gihani Fernando', photo: antaneetaPhoto, university: 'Seneca Polytechnic – Ontario (Seneca @York)', program: 'Sports, Entertainment and Event Marketing – Graduate Certificate' },
+  'Supun Jay': { displayName: 'Supun Kaushalya Jayawardana Ovitigalage', photo: supunPhoto, university: 'Langara College', program: 'Post-Degree Diploma in Accounting', intake: 'May 2024' },
+  'Siluna Nimhan': { displayName: 'Siluna Nimhan Kossinna', photo: silunaPhoto, university: 'Seneca Polytechnic College, Newnham', program: 'Postgraduate Bundle: Business Analytics and Supply Chain Management' },
+  'Kanchana Weerasekara': { displayName: 'Kanchana Hemantha Weerasekara', photo: kanchanaPhoto, university: 'Unitec Institute of Technology, New Zealand', program: 'Master of Applied Business (Advanced Human Resources)', intake: 'July 2024' },
+  Roshan: { displayName: 'Abdul Wahab Ayukhan Roshan Bibi', photo: roshanPhoto, university: 'University of the West of Scotland, London Campus', program: 'MSc Information Technology with Cloud Computing' },
+  'Vinothan Sundaralingam': { photo: vinothanPhoto, university: 'Conestoga College', program: 'Construction Management (Postgraduate)', dli: 'O19376158572' },
+  'Tharshika Vathanakumar': { photo: tharshikaPhoto },
+  'Janssi Devi': { displayName: 'Jansenidevi Sundararajan Kuhanesan', photo: jansenideviPhoto, university: 'Kingston University', program: 'LLM in Law – General' },
+  'Devni Dissanayke': { displayName: 'Devni Dissanayaka', photo: devniPhoto },
+  'Ruwais Anis': { displayName: 'Mohamed Ruwaisdeen Mohamed Anisdeen', photo: ruwaisdeenPhoto, university: 'Stanley College, West Perth', program: 'Bachelor of Business – Accounting', intake: 'August 2023' },
+}
+
+const googleReviews = baseGoogleReviews
+  .map((review) => ({ ...review, ...studentDetails[review.name] }))
+  .toSpliced(4, 0, {
+    name: 'Nirosha Maheshan', initials: 'NM', photo: niroshaMaheshanPhoto,
+    source: 'Student Success', university: 'Aberystwyth University',
+    program: 'Master of Business Administration in Project Management',
+  })
 
 function SuccessStories() {
   const [storiesVisible, setStoriesVisible] = useState(false)
@@ -89,16 +127,22 @@ function SuccessStories() {
           {googleReviews.map((review) => (
             <article className="story-card google-review-card" key={`google-${review.name}`}>
               <header>
-                <span className="story-initials">{review.initials}</span>
-                <div><h2>{review.name}</h2><p className="google-review-source">Google Review · {review.date}</p></div>
+                {review.photo ? <img src={review.photo} alt={`${review.displayName || review.name} success story`} /> : <span className="story-initials">{review.initials}</span>}
+                <div><h2>{review.displayName || review.name}</h2><p className="google-review-source">{review.source || 'Google Review'}{review.date ? ` · ${review.date}` : ''}</p></div>
               </header>
-              <div className="google-review-stars" aria-label={`${review.rating} out of 5 stars`}>
+              {review.rating && <div className="google-review-stars" aria-label={`${review.rating} out of 5 stars`}>
                 {[1, 2, 3, 4, 5].map((star) => <Star key={star} size={18} fill={star <= review.rating ? 'currentColor' : 'none'} />)}
-              </div>
-              <div className="story-quote"><Quote size={19} /><p>{review.quote}</p></div>
+              </div>}
+              {review.quote && <div className="story-quote"><Quote size={19} /><p>{review.quote}</p></div>}
+              {(review.university || review.program || review.intake || review.dli) && <dl className="story-study-details">
+                {review.university && <div><dt>University</dt><dd>{review.university}</dd></div>}
+                {review.program && <div><dt>Programme</dt><dd>{review.program}</dd></div>}
+                {review.intake && <div><dt>Intake</dt><dd>{review.intake}</dd></div>}
+                {review.dli && <div><dt>DLI</dt><dd>{review.dli}</dd></div>}
+              </dl>}
               <footer>
-                <span><BadgeCheck size={14} /> Google Review</span>
-                <a href={googleReviewsUrl} target="_blank" rel="noreferrer">View on Google <ExternalLink size={14} /></a>
+                <span><BadgeCheck size={14} /> {review.source || 'Google Review'}</span>
+                {!review.source && <a href={googleReviewsUrl} target="_blank" rel="noreferrer">View on Google <ExternalLink size={14} /></a>}
               </footer>
             </article>
           ))}

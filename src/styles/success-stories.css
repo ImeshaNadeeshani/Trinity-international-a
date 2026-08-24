@@ -24,6 +24,10 @@
 .google-review-source { color: #d8f2e1 !important; font-weight: 650 !important; }
 .google-review-stars { display: flex; gap: 3px; margin-top: 20px; color: #f5b800; }
 .google-review-card .story-quote { margin-top: 14px; }
+.story-study-details { display: grid; gap: 8px; margin-top: 16px; padding: 14px; background: #f1f8f4; border: 1px solid #d5e8db; border-radius: 10px; }
+.story-study-details > div { display: grid; grid-template-columns: 72px 1fr; gap: 8px; }
+.story-study-details dt { color: #00704a; font-size: .7rem; font-weight: 900; text-transform: uppercase; }
+.story-study-details dd { margin: 0; color: #174f3d; font-size: .78rem; font-weight: 650; line-height: 1.4; }
 .google-review-card footer { justify-content: flex-start; }
 .google-review-card footer a { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; color: #00683f; font-size: .78rem; font-weight: 900; text-decoration: none; }
 .google-review-card footer a:hover { color: #00a968; text-decoration: underline; }

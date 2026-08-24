@@ -39,7 +39,20 @@ import arizonaStateUniversityImage from '../assets/images/university-arizona-sta
 import northFloridaUniversityImage from '../assets/images/university-north-florida.jpg'
 import missouriUniversityImage from '../assets/images/university-missouri.png'
 import californiaBerkeleyUniversityImage from '../assets/images/university-california-berkeley.jpg'
-import newEnglandCollegeImage from '../assets/images/university-new-england-college.jpg'
+import newEnglandCollegeImage from '../assets/images/university-new-england-college-sign.png'
+import pacificCrestUniversityImage from '../assets/images/university-pacific-crest.png'
+import galwayUniversityImage from '../assets/images/university-galway.jpg'
+import maynoothUniversityImage from '../assets/images/university-maynooth.jpg'
+import limerickUniversityImage from '../assets/images/university-limerick.jpg'
+import dublinBusinessSchoolImage from '../assets/images/dublin-business-school.webp'
+import trinityCollegeDublinImage from '../assets/images/trinity-college-dublin.jpg'
+import universityCollegeDublinImage from '../assets/images/university-college-dublin.jpg'
+import tumAsiaUniversityImage from '../assets/images/university-tum-asia.jpg'
+import jamesCookSingaporeImage from '../assets/images/university-james-cook-singapore.jpg'
+import simGlobalEducationImage from '../assets/images/university-sim-global-education.webp'
+import taylorsUniversityMalaysiaImage from '../assets/images/university-taylors-malaysia.webp'
+import sunwayUniversityMalaysiaImage from '../assets/images/university-sunway-malaysia.jpg'
+import monashUniversityMalaysiaImage from '../assets/images/university-monash-malaysia.jpg'
 import '../styles/destinations.css'
 
 const destinationHeroImages = {
@@ -84,6 +97,19 @@ const universityImages = {
   'University of Missouri': missouriUniversityImage,
   'University of California, Berkeley': californiaBerkeleyUniversityImage,
   'New England College': newEnglandCollegeImage,
+  'Pacific Crest University': pacificCrestUniversityImage,
+  'University of Galway': galwayUniversityImage,
+  'Maynooth University': maynoothUniversityImage,
+  'University of Limerick': limerickUniversityImage,
+  'Dublin Business School': dublinBusinessSchoolImage,
+  'Trinity College Dublin': trinityCollegeDublinImage,
+  'University College Dublin': universityCollegeDublinImage,
+  'Technical University of Munich, Singapore': tumAsiaUniversityImage,
+  'James Cook University Singapore': jamesCookSingaporeImage,
+  'SIM Global Education': simGlobalEducationImage,
+  "Taylor's University": taylorsUniversityMalaysiaImage,
+  'Sunway University Malaysia': sunwayUniversityMalaysiaImage,
+  'Monash University Malaysia': monashUniversityMalaysiaImage,
   'RMIT University': rmitUniversityImage,
   'Deakin University': deakinUniversityImage,
   'Federation University': federationUniversityImage,

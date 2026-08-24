@@ -209,10 +209,10 @@ function Home() {
               ) : (
                 <>
                   <video className="future-career-video-backdrop" autoPlay muted loop playsInline aria-hidden="true">
-                    <source src="/videos/home-slide-4-whatsapp.mp4" type="video/mp4" />
+                    <source src="/videos/future-career-video-3.mp4" type="video/mp4" />
                   </video>
-                  <video className="future-career-hero-video" autoPlay muted loop playsInline aria-label="Students exploring their future career opportunities">
-                    <source src="/videos/home-slide-4-whatsapp.mp4" type="video/mp4" />
+                  <video className="future-career-hero-video" autoPlay muted loop playsInline aria-label="Student exploring future career opportunities">
+                    <source src="/videos/future-career-video-3.mp4" type="video/mp4" />
                   </video>
                 </>
               )}

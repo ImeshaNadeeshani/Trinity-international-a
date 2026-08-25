@@ -33,7 +33,7 @@ import studyAbroadServiceImage from '../assets/images/service-student-4.png'
 import '../styles/home.css'
 
 const stats = [
-  { value: '17+', label: 'Years of Expertise', icon: BadgeCheck },
+  { value: '15+', label: 'Years of Expertise', icon: BadgeCheck },
   { value: '18,500+', label: 'Students Placed Globally', icon: UsersRound },
   { value: '1,100+', label: 'Partner Campuses', icon: Landmark },
   { value: '98.4%', label: 'Visa Approval Rate', icon: ShieldCheck },

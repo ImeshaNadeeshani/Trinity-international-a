@@ -6,7 +6,7 @@ import '../styles/contact.css'
 const mapUrl = 'https://www.google.com/maps/place/27+Layards+Rd,+Colombo+00500/@6.8847401,79.8595332,17z/data=!3m1!4b1!4m6!3m5!1s0x3ae25bc598e03331:0xfacabfeab9eb183b!8m2!3d6.8847401!4d79.8621081!16s%2Fg%2F11q8fx0dmx?entry=ttu'
 
 const contactDetails = [
-  { icon: MapPin, title: 'Our Office', content: <>No. 27, Leyards Road,<br />Colombo 05, Sri Lanka</> },
+  { icon: MapPin, title: 'Our Office', content: <>No. 27, Layards Road,<br />Colombo 05, Sri Lanka</> },
   { icon: Phone, title: 'Phone Number', content: <a href="tel:+94715130130">+94 71 513 0130</a> },
   { icon: Mail, title: 'Email Address', content: <a href="mailto:info@trinityintl.lk">info@trinityintl.lk</a> },
   { icon: Globe2, title: 'Web Presence', content: <a href="https://trinityintl.lk" target="_blank" rel="noreferrer">www.trinityintl.lk</a> },
@@ -57,11 +57,11 @@ function ContactUs() {
         <div className="container location-heading">
           <p>Find us</p>
           <h2>Our <span>Location</span></h2>
-          <a href={mapUrl} target="_blank" rel="noreferrer">No. 27, Leyards Road, Colombo 05, Sri Lanka</a>
+          <a href={mapUrl} target="_blank" rel="noreferrer">No. 27, Layards Road, Colombo 05, Sri Lanka</a>
         </div>
         <div className="container map-panel">
           <iframe
-            title="Trinity International at No. 27 Leyards Road, Colombo 05"
+            title="Trinity International at No. 27 Layards Road, Colombo 05"
             src="https://www.google.com/maps?q=6.8847401,79.8621081&z=17&output=embed"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"

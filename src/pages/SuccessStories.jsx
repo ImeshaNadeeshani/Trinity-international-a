@@ -41,7 +41,7 @@ const baseGoogleReviews = [
   { name: 'Sangeeth Amirthanathan', initials: 'SA', quote: 'I am incredibly grateful to Trinity International for their excellent guidance in securing my student visa for the University of Hertfordshire in the UK. Every step of the application process was explained carefully, making it smooth.', rating: 5, date: 'A year ago' },
   { name: 'Anosha Rangalla', initials: 'AR', quote: 'Trinity did an amazing job within a short period of time for my student visa in Canada. I would like to admire Michelle from Trinity, who carefully reviewed my profile and supported me even in selecting a programme.', rating: 5, date: '2 years ago' },
   { name: 'Sachi Rodrigo', initials: 'SR', quote: 'I am writing to express my heartfelt gratitude and complete satisfaction with Trinity International and its team.', rating: 5, date: '2 years ago' },
-  { name: 'Nirosha Deboriah', initials: 'ND', quote: 'I want to express my deepest gratitude for the exceptional support and guidance provided throughout my journey to obtain a UK student visa.', rating: 5, date: '2 years ago' },
+  { name: 'Nirosha Maheshan', initials: 'NM', quote: 'I want to express my deepest gratitude for the exceptional support and guidance provided throughout my journey to obtain a UK student visa.', rating: 5, date: '2 years ago' },
   { name: 'Imanthi Jayakody', initials: 'IJ', quote: 'I am truly grateful to Trinity International, especially Kuvini, for handling my study permit process so smoothly. I came to Canada for my MBA at New York Institute of Technology, Vancouver.', rating: 5, date: '11 months ago' },
   { name: 'Danura Jayakody', initials: 'DJ', quote: 'I am incredibly grateful to the entire Trinity International team for making my Canada dream a success. The process was seamless and stress-free. Asma helped me select the right university, while Ani supported the visa process.', rating: 5, date: 'A year ago' },
   { name: 'Antaneeta Fernando', initials: 'AF', quote: 'I would like to thank the Trinity staff for supporting and guiding me throughout my journey to move to Canada. It was a smooth process working with the team.', rating: 5, date: '11 months ago' },
@@ -60,6 +60,7 @@ const baseGoogleReviews = [
 
 const studentDetails = {
   'Sangeeth Amirthanathan': { photo: sangeethPhoto, university: 'University of Hertfordshire', program: 'MSc Artificial Intelligence and Robotics', intake: 'January 2025' },
+  'Nirosha Maheshan': { photo: niroshaMaheshanPhoto, university: 'Aberystwyth University', program: 'Master of Business Administration in Project Management' },
   'Imanthi Jayakody': { displayName: 'Imanthi Chandramali Jayakody', photo: imanthiPhoto, university: 'New York Institute of Technology, Vancouver Campus', program: 'Master of Business Administration', intake: 'January 2025' },
   'Danura Jayakody': { displayName: 'Danura Ishara Jayakody', photo: danuraPhoto, university: 'University Canada West', program: 'Master of Business Administration', intake: 'September 2024' },
   'Antaneeta Fernando': { displayName: 'Antaneeta Gihani Fernando', photo: antaneetaPhoto, university: 'Seneca Polytechnic – Ontario (Seneca @York)', program: 'Sports, Entertainment and Event Marketing – Graduate Certificate' },
@@ -76,11 +77,6 @@ const studentDetails = {
 
 const googleReviews = baseGoogleReviews
   .map((review) => ({ ...review, ...studentDetails[review.name] }))
-  .toSpliced(4, 0, {
-    name: 'Nirosha Maheshan', initials: 'NM', photo: niroshaMaheshanPhoto,
-    source: 'Student Success', university: 'Aberystwyth University',
-    program: 'Master of Business Administration in Project Management',
-  })
 
 function SuccessStories() {
   const [storiesVisible, setStoriesVisible] = useState(false)

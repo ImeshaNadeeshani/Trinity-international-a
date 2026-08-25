@@ -55,9 +55,9 @@ const leaders = {
     { name: 'Richie Weerakoon', displayName: 'Richie Weerakoon', role: 'Assistant Manager – Human Resources', image: richieWeerakoon },
     { name: 'Nishan Rubera', displayName: 'Nishan Rubera', role: 'Manager', image: nishanRubera },
     { name: 'Shenal Jerusha', displayName: 'Shenal Jerusha', role: 'Digital Marketing & Content Specialist', image: shenalJerusha },
-    { name: 'Imesha Nadeeshani', displayName: 'Imesha Nadeeshani', role: 'Software Developer & Data Analyst', image: imeshaNadeeshani },
     { name: 'Chamuth Senura', displayName: 'Chamuth Senura', role: 'Software Developer', image: chamuthSenura },
     { name: 'Sepalika Sewwandi', displayName: 'Sepalika Sewwandi', role: 'HR Assistant', image: sepalikaSewwandi },
+    { name: 'Imesha Nadeeshani', displayName: 'Imesha Nadeeshani', role: 'Software Developer & Data Analyst', image: imeshaNadeeshani },
   ],
 }
 

@@ -64,7 +64,7 @@ const leaders = {
 function LeaderCard({ person }) {
   return (
     <article className="about-leader-card">
-      <div className="leader-photo"><img src={person.image} alt={person.displayName} /></div>
+      <div className="leader-photo"><img className={person.name === 'Stefan Shanmugarajah' ? 'stefan-photo' : undefined} src={person.image} alt={person.displayName} /></div>
       <h3>{person.displayName}</h3>
       <p>{person.role}</p>
     </article>

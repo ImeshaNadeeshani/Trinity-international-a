@@ -83,7 +83,7 @@ const studentDetails = {
 
 const googleReviews = baseGoogleReviews
   .map((review) => ({ ...review, ...studentDetails[review.name] }))
-  .sort((first, second) => Number(first.generatedAvatar) - Number(second.generatedAvatar))
+  .sort((first, second) => (first.generatedAvatar ? 1 : 0) - (second.generatedAvatar ? 1 : 0))
 
 function SuccessStories() {
   const [storiesVisible, setStoriesVisible] = useState(false)

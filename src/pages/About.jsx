@@ -21,7 +21,7 @@ import imeshaNadeeshani from '../assets/images/imesha-nadeeshani.png'
 import chathurikaSewwandi from '../assets/images/chathurika-sewwandi.png'
 import richieWeerakoon from '../assets/images/richie-weerakoon.png'
 import manishaRatnayake from '../assets/images/manisha-ratnayake.png'
-import nishanRubera from '../assets/images/nishan-rubera.jpeg'
+import nishanRubera from '../assets/images/nishan-rubera.png'
 import shenalJerusha from '../assets/images/shenal-jerusha.png'
 import chamuthSenura from '../assets/images/chamuth-senura.png'
 import sepalikaSewwandi from '../assets/images/sepalika-sewwandi.png'
@@ -64,7 +64,7 @@ const leaders = {
 function LeaderCard({ person }) {
   return (
     <article className="about-leader-card">
-      <div className="leader-photo"><img src={person.image} alt={person.displayName} /></div>
+      <div className="leader-photo"><img className={person.name === 'Nishan Rubera' ? 'nishan-photo' : undefined} src={person.image} alt={person.displayName} /></div>
       <h3>{person.displayName}</h3>
       <p>{person.role}</p>
     </article>

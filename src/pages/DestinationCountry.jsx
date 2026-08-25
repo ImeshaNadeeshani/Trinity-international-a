@@ -208,7 +208,7 @@ function DestinationCountry() {
       )}
       <div className="container">
         <nav className="destination-breadcrumb" aria-label="Breadcrumb"><Link to="/">Home</Link><span>/</span><Link to="/destinations">Destinations</Link><span>/</span><strong>{country.name}</strong></nav>
-        {!['australia', 'united-kingdom', 'canada', 'new-zealand', 'usa', 'ireland', 'singapore'].includes(countrySlug) && (
+        {!['australia', 'united-kingdom', 'canada', 'new-zealand', 'usa', 'ireland', 'singapore', 'malaysia'].includes(countrySlug) && (
           <section className="country-hero">
             <div className="country-hero-copy">{!destinationHeroImage && <><p className="eyebrow">Destination guide</p><h1>Study in {country.name}</h1></>}<p>{country.intro}</p><div className="country-hero-tags"><span><Globe2 size={15} /> {country.region}</span><span><ShieldCheck size={15} /> {country.highlight}</span></div></div>
             <div className="country-hero-card"><span className="country-hero-flag" aria-hidden="true">{country.flagEmoji}</span><p>Why students choose it</p><strong>{country.shortLabel}</strong><Link to="/contact">Talk through your options <ArrowRight size={16} /></Link></div>

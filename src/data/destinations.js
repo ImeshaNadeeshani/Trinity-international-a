@@ -21,7 +21,6 @@ export const destinations = [
     universities: [
       { name: 'RMIT University', location: 'Melbourne, Australia' },
       { name: 'Deakin University', location: 'Melbourne, Australia' },
-      { name: 'Federation University', location: 'Ballarat, Australia' },
       { name: 'UNSW Sydney', location: 'Sydney, New South Wales, Australia' },
       { name: 'Flinders University', location: 'Adelaide, South Australia' },
       { name: 'James Cook University', location: 'Queensland, Australia' },

@@ -17,7 +17,6 @@ import jamesCookUniversityImage from '../assets/images/university-james-cook.jpg
 import canberraCollegeImage from '../assets/images/university-canberra-college.jpg'
 import rmitUniversityImage from '../assets/images/university-rmit.jpg'
 import deakinUniversityImage from '../assets/images/university-deakin.jpg'
-import federationUniversityImage from '../assets/images/university-federation.jpg'
 import northumbriaUniversityImage from '../assets/images/university-northumbria.jpg'
 import queensBelfastUniversityImage from '../assets/images/university-queens-belfast.jpg'
 import cardiffUniversityImage from '../assets/images/university-cardiff.jpg'
@@ -113,7 +112,6 @@ const universityImages = {
   'Monash University Malaysia': monashUniversityMalaysiaImage,
   'RMIT University': rmitUniversityImage,
   'Deakin University': deakinUniversityImage,
-  'Federation University': federationUniversityImage,
   'UNSW Sydney': unswUniversityImage,
   'Flinders University': flindersUniversityImage,
   'James Cook University': jamesCookUniversityImage,

@@ -21,7 +21,7 @@ function WhatsAppChat() {
           </div>
           <div className="whatsapp-footer">
             <a href={whatsappUrl} target="_blank" rel="noreferrer"><Phone size={19} /> Start WhatsApp Chat</a>
-            <small>070 767 0670</small>
+            <small>+94 707670670</small>
           </div>
         </div>
       )}

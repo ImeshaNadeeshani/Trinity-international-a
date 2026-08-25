@@ -9,7 +9,7 @@ function Footer() {
         <div className="footer-brand">
           <a className="footer-logo" href="#home"><img src={logoAsset} alt="Trinity International" /></a>
           <p>Helping ambitious students from Sri Lanka find the right university, secure scholarships and arrive prepared for day one.</p>
-          <div className="footer-contact"><span><Phone size={15} /> 070 767 0670</span><span><Mail size={15} /> Admin@tihsl.com</span><span><MapPin size={15} /> Colombo, Sri Lanka</span></div>
+          <div className="footer-contact"><span><Phone size={15} /> +94 707670670</span><span><Mail size={15} /> Admin@tihsl.com</span><span><MapPin size={15} /> Colombo, Sri Lanka</span></div>
         </div>
         <div className="footer-column"><h3>Explore</h3><a href="#services">Services</a><a href="#advisory">Destinations</a><a href="#why">Why Trinity</a><a href="#contact">Consultation</a></div>
         <div className="footer-column"><h3>Resources</h3><a href="#ai-guidance">AI Guidance</a><a href="#advisory">Study Assessment</a><a href="#contact">Contact Us</a><a href="#home">Success Stories</a></div>

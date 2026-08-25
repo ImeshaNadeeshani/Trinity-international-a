@@ -7,7 +7,7 @@ const mapUrl = 'https://www.google.com/maps/place/27+Layards+Rd,+Colombo+00500/@
 
 const contactDetails = [
   { icon: MapPin, title: 'Our Office', content: <>No. 27, Layards Road,<br />Colombo 05, Sri Lanka</> },
-  { icon: Phone, title: 'Phone Number', content: <a href="tel:0707670670">070 767 0670</a> },
+  { icon: Phone, title: 'Phone Number', content: <a href="tel:+94707670670">+94 707670670</a> },
   { icon: Mail, title: 'Email Address', content: <a href="mailto:Admin@tihsl.com">Admin@tihsl.com</a> },
   { icon: Clock3, title: 'Office Hours', content: <>Mon–Fri: 9.00 AM–5.30 PM<br />Sat: 9.00 AM–1.30 PM</> },
 ]

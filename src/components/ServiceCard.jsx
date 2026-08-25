@@ -1,6 +1,6 @@
 import { ArrowRight, ChevronDown } from 'lucide-react'
 
-function ServiceCard({ icon: Icon, image, label, title, description, features, action, expanded, onToggle }) {
+function ServiceCard({ icon: Icon, image, label, title, description, features, action, href, expanded, onToggle }) {
   return (
     <article className={`service-card${expanded ? ' service-card-open' : ''}`}>
       <img className="service-card-image" src={image} alt="" />
@@ -16,7 +16,7 @@ function ServiceCard({ icon: Icon, image, label, title, description, features, a
         <ul className="service-features">
           {features.map((feature) => <li key={feature}>{feature}</li>)}
         </ul>
-        <a className="service-link" href="#contact" tabIndex={expanded ? 0 : -1}>{action} <ArrowRight size={16} /></a>
+        {action && href && <a className="service-link" href={href} tabIndex={expanded ? 0 : -1}>{action} <ArrowRight size={16} /></a>}
       </div>
     </article>
   )

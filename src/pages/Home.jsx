@@ -41,13 +41,12 @@ const stats = [
 
 const services = [
   {
-    icon: Landmark,
+    icon: GraduationCap,
     image: findmyUniServiceImage,
-    label: 'Local study support',
-    title: 'FindmyUni',
-    description: 'Find the best local universities and programmes for your academic and career goals.',
-    features: ['University search', 'Course guidance', 'Application assistance'],
-    action: 'FindmyUni',
+    label: 'Your next chapter',
+    title: 'Study Abroad Advisory',
+    description: 'Complete support for choosing a destination, securing admission and preparing to go.',
+    features: ['Destination planning', 'University applications', 'Student visa support'],
   },
   {
     icon: Globe2,
@@ -56,7 +55,6 @@ const services = [
     title: 'Migration Advisory',
     description: 'Expert migration services to help you move to your dream country with confidence.',
     features: ['Skilled migration', 'PR and citizenship', 'Documentation support'],
-    action: 'Learn more',
   },
   {
     icon: Plane,
@@ -65,16 +63,16 @@ const services = [
     title: 'Travel & Business Visa',
     description: 'Smooth and hassle-free visa services for your travel, meetings and business needs.',
     features: ['Tourism visas', 'Business visas', 'Interview preparation'],
-    action: 'Learn more',
   },
   {
-    icon: GraduationCap,
+    icon: Landmark,
     image: migrationServiceImage,
-    label: 'Your next chapter',
-    title: 'Study Abroad Advisory',
-    description: 'Complete support for choosing a destination, securing admission and preparing to go.',
-    features: ['Destination planning', 'University applications', 'Student visa support'],
-    action: 'Explore study abroad',
+    label: 'Local study support',
+    title: 'FindmyUni',
+    description: 'Find the best local universities and programmes for your academic and career goals.',
+    features: ['University search', 'Course guidance', 'Application assistance'],
+    action: 'FindmyUni',
+    href: '/findmyuni',
   },
 ]
 

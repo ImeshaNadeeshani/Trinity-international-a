@@ -17,6 +17,8 @@ import tharshikaPhoto from '../assets/images/success-stories/tharshika-vathanaku
 import jansenideviPhoto from '../assets/images/success-stories/jansenidevi-kuhanesan.png'
 import devniPhoto from '../assets/images/success-stories/devni-dissanayaka.png'
 import ruwaisdeenPhoto from '../assets/images/success-stories/mohamed-ruwaisdeen.png'
+import genericFemaleCartoon from '../assets/images/success-stories/generic-female-cartoon.png'
+import genericMaleCartoon from '../assets/images/success-stories/generic-male-cartoon.png'
 import '../styles/success-stories.css'
 
 /* Previous manually entered stories removed in favour of sourced Google reviews.
@@ -60,6 +62,8 @@ const baseGoogleReviews = [
 
 const studentDetails = {
   'Sangeeth Amirthanathan': { photo: sangeethPhoto, university: 'University of Hertfordshire', program: 'MSc Artificial Intelligence and Robotics', intake: 'January 2025' },
+  'Anosha Rangalla': { photo: genericFemaleCartoon, generatedAvatar: true },
+  'Sachi Rodrigo': { photo: genericFemaleCartoon, generatedAvatar: true },
   'Nirosha Maheshan': { photo: niroshaMaheshanPhoto, university: 'Aberystwyth University', program: 'Master of Business Administration in Project Management' },
   'Imanthi Jayakody': { displayName: 'Imanthi Chandramali Jayakody', photo: imanthiPhoto, university: 'New York Institute of Technology, Vancouver Campus', program: 'Master of Business Administration', intake: 'January 2025' },
   'Danura Jayakody': { displayName: 'Danura Ishara Jayakody', photo: danuraPhoto, university: 'University Canada West', program: 'Master of Business Administration', intake: 'September 2024' },
@@ -72,11 +76,14 @@ const studentDetails = {
   'Tharshika Vathanakumar': { photo: tharshikaPhoto },
   'Janssi Devi': { displayName: 'Jansenidevi Sundararajan Kuhanesan', photo: jansenideviPhoto, university: 'Kingston University', program: 'LLM in Law – General' },
   'Devni Dissanayke': { displayName: 'Devni Dissanayaka', photo: devniPhoto },
+  'Stefan Nadarajah': { photo: genericMaleCartoon, generatedAvatar: true },
+  'Krishane Wickramasinghe': { photo: genericMaleCartoon, generatedAvatar: true },
   'Ruwais Anis': { displayName: 'Mohamed Ruwaisdeen Mohamed Anisdeen', photo: ruwaisdeenPhoto, university: 'Stanley College, West Perth', program: 'Bachelor of Business – Accounting', intake: 'August 2023' },
 }
 
 const googleReviews = baseGoogleReviews
   .map((review) => ({ ...review, ...studentDetails[review.name] }))
+  .sort((first, second) => Number(first.generatedAvatar) - Number(second.generatedAvatar))
 
 function SuccessStories() {
   const [storiesVisible, setStoriesVisible] = useState(false)
@@ -123,7 +130,7 @@ function SuccessStories() {
           {googleReviews.map((review) => (
             <article className="story-card google-review-card" key={`google-${review.name}`}>
               <header>
-                {review.photo ? <img src={review.photo} alt={`${review.displayName || review.name} success story`} /> : <span className="story-initials">{review.initials}</span>}
+                {review.photo ? <img src={review.photo} alt={review.generatedAvatar ? `Cartoon profile illustration for ${review.displayName || review.name}` : `${review.displayName || review.name} success story`} /> : <span className="story-initials">{review.initials}</span>}
                 <div><h2>{review.displayName || review.name}</h2><p className="google-review-source">{review.source || 'Google Review'}{review.date ? ` · ${review.date}` : ''}</p></div>
               </header>
               {review.rating && <div className="google-review-stars" aria-label={`${review.rating} out of 5 stars`}>

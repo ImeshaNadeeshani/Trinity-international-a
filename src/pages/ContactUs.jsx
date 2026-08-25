@@ -1,5 +1,5 @@
 import {
-  Clock3, Globe2, Mail, MapPin, Phone, Send,
+  Clock3, Mail, MapPin, Phone, Send,
 } from 'lucide-react'
 import '../styles/contact.css'
 
@@ -7,10 +7,9 @@ const mapUrl = 'https://www.google.com/maps/place/27+Layards+Rd,+Colombo+00500/@
 
 const contactDetails = [
   { icon: MapPin, title: 'Our Office', content: <>No. 27, Layards Road,<br />Colombo 05, Sri Lanka</> },
-  { icon: Phone, title: 'Phone Number', content: <a href="tel:+94715130130">+94 71 513 0130</a> },
-  { icon: Mail, title: 'Email Address', content: <a href="mailto:info@trinityintl.lk">info@trinityintl.lk</a> },
-  { icon: Globe2, title: 'Web Presence', content: <a href="https://trinityintl.lk" target="_blank" rel="noreferrer">www.trinityintl.lk</a> },
-  { icon: Clock3, title: 'Office Hours', content: <>Mon–Fri: 9.00 AM–6.00 PM<br />Sat: 9.00 AM–1.00 PM</> },
+  { icon: Phone, title: 'Phone Number', content: <a href="tel:0707670670">070 767 0670</a> },
+  { icon: Mail, title: 'Email Address', content: <a href="mailto:Admin@tihsl.com">Admin@tihsl.com</a> },
+  { icon: Clock3, title: 'Office Hours', content: <>Mon–Fri: 9.00 AM–5.30 PM<br />Sat: 9.00 AM–1.30 PM</> },
 ]
 
 function ContactUs() {

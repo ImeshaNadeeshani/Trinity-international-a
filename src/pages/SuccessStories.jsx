@@ -130,7 +130,7 @@ function SuccessStories() {
           {googleReviews.map((review) => (
             <article className="story-card google-review-card" key={`google-${review.name}`}>
               <header>
-                {review.photo ? <img src={review.photo} alt={review.generatedAvatar ? `Cartoon profile illustration for ${review.displayName || review.name}` : `${review.displayName || review.name} success story`} /> : <span className="story-initials">{review.initials}</span>}
+                {review.photo ? <span className="story-avatar"><img src={review.photo} alt={review.generatedAvatar ? `Cartoon profile illustration for ${review.displayName || review.name}` : `${review.displayName || review.name} success story`} /></span> : <span className="story-initials">{review.initials}</span>}
                 <div><h2>{review.displayName || review.name}</h2><p className="google-review-source">{review.source || 'Google Review'}{review.date ? ` · ${review.date}` : ''}</p></div>
               </header>
               {review.rating && <div className="google-review-stars" aria-label={`${review.rating} out of 5 stars`}>

@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 import SectionTitle from '../components/SectionTitle'
 import aboutStudents from '../assets/images/about-student-collage-v2.png'
-import stefanShanmugarajah from '../assets/images/stefan-shanmugarajah.jpeg'
+import stefanShanmugarajah from '../assets/images/stefan-shanmugarajah.png'
 import dehamiDirector from '../assets/images/dehami-director.png'
 import pasterHeshan from '../assets/images/paster-heshan-rubera.png'
 import ananthiVythilingam from '../assets/images/ananthi-vythilingam.jpeg'
@@ -64,7 +64,7 @@ const leaders = {
 function LeaderCard({ person }) {
   return (
     <article className="about-leader-card">
-      <div className="leader-photo"><img className={person.name === 'Stefan Shanmugarajah' ? 'stefan-photo' : undefined} src={person.image} alt={person.displayName} /></div>
+      <div className="leader-photo"><img src={person.image} alt={person.displayName} /></div>
       <h3>{person.displayName}</h3>
       <p>{person.role}</p>
     </article>

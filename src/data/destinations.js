@@ -136,7 +136,7 @@ export const destinations = [
     intakes: [{ month: 'January', description: 'Popular start for selected private institutions.' }, { month: 'August', description: 'Main intake for many university programmes.' }],
     universities: [{ name: 'James Cook University Singapore', location: 'Singapore' }, { name: 'SIM Global Education', location: 'Singapore' }, { name: 'Technical University of Munich, Singapore', location: 'Singapore' }],
     reasons: ['Strategic global location', 'Safe and connected city', 'Strong business ecosystem'],
-    faqs: [{ question: 'How long is an In-Principle Approval (IPA) valid?', answer: 'Three months.' }, { question: 'What is a Student Pass?', answer: 'A Student Pass is the immigration permission required for eligible full-time study in Singapore.' }],
+    faqs: [{ question: 'How long is an In-Principle Approval (IPA) valid?', answer: 'An In-Principle Approval (IPA) is valid for three months from the date it is issued.' }, { question: 'What is a Student Pass?', answer: 'A Student Pass is the immigration permission required for eligible full-time study in Singapore.' }],
   },
   {
     slug: 'malaysia',

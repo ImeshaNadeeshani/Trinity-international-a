@@ -34,9 +34,9 @@ import '../styles/home.css'
 
 const stats = [
   { value: '15+', label: 'Years of Expertise', icon: BadgeCheck },
-  { value: '18,500+', label: 'Students Placed Globally', icon: UsersRound },
-  { value: '1,100+', label: 'Partner Campuses', icon: Landmark },
-  { value: '98.4%', label: 'Visa Approval Rate', icon: ShieldCheck },
+  { value: '5,000+', label: 'Students Placed Globally', icon: UsersRound },
+  { value: '200+', label: 'Partner Campuses', icon: Landmark },
+  { value: '95%', label: 'Visa Approval Rate', icon: ShieldCheck },
 ]
 
 const services = [

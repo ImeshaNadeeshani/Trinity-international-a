@@ -35,7 +35,7 @@ const purposeCards = [
 ]
 
 const metrics = [
-  { value: '17+', label: 'Years of Experience', icon: GraduationCap },
+  { value: '15+', label: 'Years of Experience', icon: GraduationCap },
   { value: '5,000+', label: 'Students Guided', icon: UsersRound },
   { value: '200+', label: 'University Partners', icon: Landmark },
   { value: '20+', label: 'Countries', icon: Globe2 },

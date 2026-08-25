@@ -62,9 +62,11 @@ const leaders = {
 }
 
 function LeaderCard({ person }) {
+  const photoClass = person.name.toLowerCase().replaceAll(' ', '-')
+
   return (
     <article className="about-leader-card">
-      <div className="leader-photo"><img className={person.name === 'Nishan Rubera' ? 'nishan-photo' : undefined} src={person.image} alt={person.displayName} /></div>
+      <div className={`leader-photo leader-photo-${photoClass}`}><img src={person.image} alt={person.displayName} /></div>
       <h3>{person.displayName}</h3>
       <p>{person.role}</p>
     </article>

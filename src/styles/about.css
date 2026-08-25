@@ -57,7 +57,10 @@
 .about-leader-card { width: 126px; text-align: center; }
 .leader-photo { width: 100%; height: 103px; overflow: hidden; background: #eef2ef; border-radius: 12px; }
 .leader-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 24%; }
-.leader-photo img.nishan-photo { object-position: 50% 16%; transform: scale(1.08); transform-origin: center 16%; }
+.leader-photo-stefan-shanmugarajah img { object-position: 50% 0; transform: translateY(-19px) scale(1.14); transform-origin: center top; }
+.leader-photo-nishan-rubera img { object-position: 50% 0; transform: translateY(-21px) scale(1.13); transform-origin: center top; }
+.leader-photo-ananthi-vythilingam img { object-position: 50% 12%; transform: scale(1.04); transform-origin: center top; }
+.leader-photo-sepalika-sewwandi img { object-position: 50% 15%; transform: scale(1.04); transform-origin: center top; }
 .about-leader-card h3 { margin-top: 7px; color: var(--dark-green); font: 700 .66rem/1.2 'DM Sans', Arial, sans-serif; }
 .about-leader-card p { margin-top: 3px; color: var(--body-text); font-size: .59rem; }
 .network-section { padding: 12px 0 20px; }

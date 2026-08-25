@@ -1,4 +1,4 @@
-import { Camera, CirclePlay, Link as LinkIcon, Mail, MapPin, Music2, Phone } from 'lucide-react'
+import { Camera, Mail, MapPin, Music2, Phone } from 'lucide-react'
 import logoAsset from '../assets/logo/trinity-official-logo.jpeg'
 import '../styles/footer.css'
 
@@ -15,7 +15,7 @@ function Footer() {
         </div>
         <div className="footer-column"><h3>Explore</h3><a href="#services">Services</a><a href="#advisory">Destinations</a><a href="#why">Why Trinity</a><a href="#contact">Consultation</a></div>
         <div className="footer-column"><h3>Resources</h3><a href="#ai-guidance">AI Guidance</a><a href="#advisory">Study Assessment</a><a href="#contact">Contact Us</a><a href="#home">Success Stories</a></div>
-        <div className="footer-column footer-social"><h3>Follow us</h3><a href="https://www.facebook.com/share/1DVF7HtbED/?mibextid=wwXIfr" target="_blank" rel="noreferrer"><span className="facebook-icon" aria-hidden="true">f</span> Facebook</a><a href="https://www.instagram.com/studyabroad_trinity?igsi=dDI5Y3J4ODR0cWlt" target="_blank" rel="noreferrer"><Camera size={17} /> Instagram</a><a href="https://www.tiktok.com/@studyabroad_trinity?_r=1&_t=ZS-99Ah96gn8Fw" target="_blank" rel="noreferrer"><Music2 size={17} /> TikTok</a><a href="#contact"><CirclePlay size={17} /> YouTube</a><a href="#contact"><LinkIcon size={17} /> LinkedIn</a><a className="footer-button" href="mailto:Admin@tihsl.com">Book free counselling</a></div>
+        <div className="footer-column footer-social"><h3>Follow us</h3><a href="https://www.facebook.com/share/1DVF7HtbED/?mibextid=wwXIfr" target="_blank" rel="noreferrer"><span className="facebook-icon" aria-hidden="true">f</span> Facebook</a><a href="https://www.instagram.com/studyabroad_trinity?igsi=dDI5Y3J4ODR0cWlt" target="_blank" rel="noreferrer"><Camera size={17} /> Instagram</a><a href="https://www.tiktok.com/@studyabroad_trinity?_r=1&_t=ZS-99Ah96gn8Fw" target="_blank" rel="noreferrer"><Music2 size={17} /> TikTok</a><a className="footer-button" href="mailto:Admin@tihsl.com">Book free counselling</a></div>
       </div>
       <div className="container footer-bottom"><span>&copy; 2026 Trinity International. All rights reserved.</span><span>Study abroad with confidence.</span></div>
     </footer>

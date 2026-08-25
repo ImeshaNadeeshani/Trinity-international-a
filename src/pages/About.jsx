@@ -13,7 +13,7 @@ import {
 import SectionTitle from '../components/SectionTitle'
 import aboutStudents from '../assets/images/about-student-collage-v2.png'
 import stefanShanmugarajah from '../assets/images/stefan-shanmugarajah.jpeg'
-import dehemiDirector from '../assets/images/dehemi-director.jpeg'
+import dehamiDirector from '../assets/images/dehami-director.png'
 import pasterHeshan from '../assets/images/paster-heshan-rubera.png'
 import ananthiVythilingam from '../assets/images/ananthi-vythilingam.jpeg'
 import antoinetteMichelle from '../assets/images/antoinette-michelle.jpeg'
@@ -117,7 +117,7 @@ function About() {
         <div className="container story-grid">
           <article className="story-copy"><h2>Our Story</h2><span className="green-rule" /><p>Trinity International began over 15+ years ago with just three passionate team members and one simple purpose helping people achieve their dreams.</p><p>Today, we have grown beyond an education consultancy into a trusted education and career advisory team, guiding students and professionals towards opportunities around the world.</p><p>Through every milestone, one thing has never changed: our personal approach.<br />We listen, understand, guide and walk the journey with you.</p><strong>Your dream. Our goal.<br />Your journey, together.</strong></article>
           <div className="office-visual"><img src={officeReception} alt="Trinity International office reception" /></div>
-          <article className="director-copy"><div className="director-heading"><h2>Director's Message</h2><Quote size={31} /></div><p>At Trinity International, we believe every student has a unique dream and the potential to achieve greatness. Our mission is to provide the right guidance, trustworthy support, and world-class opportunities to help you succeed globally. We are with you, every step of your journey.</p><strong>Dehami Rubera</strong><small>— Director<br />Trinity International</small><img src={dehemiDirector} alt="Dehami Rubera, Director of Trinity International" /></article>
+          <article className="director-copy"><div className="director-heading"><h2>Director's Message</h2><Quote size={31} /></div><p>At Trinity International, we believe every student has a unique dream and the potential to achieve greatness. Our mission is to provide the right guidance, trustworthy support, and world-class opportunities to help you succeed globally. We are with you, every step of your journey.</p><strong>Dehami Rubera</strong><small>— Director<br />Trinity International</small><img src={dehamiDirector} alt="Dehami Rubera, Director of Trinity International" /></article>
         </div>
       </section>
 

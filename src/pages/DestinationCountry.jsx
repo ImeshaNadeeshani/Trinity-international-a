@@ -1,4 +1,5 @@
 import { ArrowLeft, ArrowRight, Banknote, BookOpenCheck, BriefcaseBusiness, CheckCircle2, ChevronDown, Clock3, Globe2, GraduationCap, HeartHandshake, Lightbulb, MapPin, ShieldCheck, UsersRound } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import DestinationStat from '../components/destinations/DestinationStat'
 import { destinationMap } from '../data/destinations'
@@ -170,6 +171,24 @@ function DestinationCountry() {
   const { countrySlug } = useParams()
   const country = destinationMap[countrySlug]
   const destinationHeroImage = destinationHeroImages[countrySlug]
+  const universitySectionRef = useRef(null)
+  const [visibleUniversitySlug, setVisibleUniversitySlug] = useState(null)
+  const universitiesVisible = visibleUniversitySlug === countrySlug
+
+  useEffect(() => {
+    const section = universitySectionRef.current
+    if (!section) return undefined
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setVisibleUniversitySlug(countrySlug)
+        observer.disconnect()
+      }
+    }, { threshold: 0.16 })
+
+    observer.observe(section)
+    return () => observer.disconnect()
+  }, [countrySlug])
 
   if (!country) {
     return <main className="destination-not-found"><div className="container"><h1>Destination not found</h1><p>Choose from our supported study destinations.</p><Link className="button button-primary" to="/destinations">Explore destinations <ArrowRight size={17} /></Link></div></main>
@@ -202,7 +221,7 @@ function DestinationCountry() {
 
         <section className="country-details-grid"><div><div className="destination-section-heading"><h2>Visa basics</h2><span><ShieldCheck size={18} /></span></div><div className="visa-basics-card"><ul>{country.visaBasics.map((item) => <li key={item}><CheckCircle2 size={15} />{item}</li>)}</ul></div></div><div><div className="destination-section-heading"><h2>Intakes calendar</h2><span><GraduationCap size={18} /></span></div><div className="intakes-list">{country.intakes.map((intake) => <article key={intake.month}><strong>{intake.month}</strong><p>{intake.description}</p></article>)}</div></div></section>
 
-        <section className="country-universities-section"><div className="destination-section-heading"><div><p className="eyebrow">University partners</p><h2>Top universities</h2></div><span className="partner-count">{country.universities.length} featured partners</span></div><div className="university-grid">{country.universities.map((university) => { const universityImage = universityImages[university.name]; return <article className={universityImage ? 'university-card-with-image' : undefined} key={university.name}>{universityImage && <img src={universityImage} alt={`${university.name} campus`} />}<div className={universityImage ? 'university-card-content' : undefined}><span className="university-icon"><MapPin size={17} /></span><div><h3>{university.name}</h3><p>{university.location}</p></div></div></article> })}</div></section>
+        <section ref={universitySectionRef} className={`country-universities-section${universitiesVisible ? ' universities-visible' : ''}`}><div className="destination-section-heading"><div><p className="eyebrow">University partners</p><h2>Top universities</h2></div><span className="partner-count">{country.universities.length} featured partners</span></div><div className="university-grid">{country.universities.map((university, index) => { const universityImage = universityImages[university.name]; return <article className={universityImage ? 'university-card-with-image' : undefined} style={{ '--university-index': index }} key={university.name}>{universityImage && <img src={universityImage} alt={`${university.name} campus`} />}<div className={universityImage ? 'university-card-content' : undefined}><span className="university-icon"><MapPin size={17} /></span><div><h3>{university.name}</h3><p>{university.location}</p></div></div></article> })}</div></section>
 
         <section className="country-reasons-section"><div className="destination-section-heading"><div><p className="eyebrow">A closer look</p><h2>Why study in {country.name}?</h2></div></div><div className="reason-grid">{country.reasons.map((reason) => { const ReasonIcon = reasonIcons[reason] || CheckCircle2; return <article key={reason}><span className="reason-icon"><ReasonIcon size={20} /></span><h3>{reason}</h3></article> })}</div></section>
 

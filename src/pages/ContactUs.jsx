@@ -6,7 +6,7 @@ import { insertSubmission } from '../lib/supabase'
 import '../styles/contact.css'
 
 const mapUrl = 'https://www.google.com/maps?cid=18071467469639981115&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNlEAMYASAF&hl=en-US&source=embed'
-const mapEmbedUrl = `${mapUrl}&output=embed`
+const mapEmbedUrl = 'https://maps.google.com/maps?q=Trinity%20International%2C%2027%20Layards%20Road%2C%20Colombo%2005%2C%20Sri%20Lanka&z=17&output=embed'
 
 const contactDetails = [
   { icon: MapPin, title: 'Our Office', content: <>No. 27, Layards Road,<br />Colombo 05, Sri Lanka</> },

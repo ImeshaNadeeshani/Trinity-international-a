@@ -13,6 +13,7 @@ import SuccessStories from './pages/SuccessStories'
 import FindMyUni from './pages/FindMyUni'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsAndConditions from './pages/TermsAndConditions'
+import EligibilityCheck from './pages/EligibilityCheck'
 import './styles/global.css'
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/success-stories" element={<SuccessStories />} />
           <Route path="/findmyuni" element={<FindMyUni />} />
+          <Route path="/eligibility-check" element={<EligibilityCheck />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsAndConditions />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />

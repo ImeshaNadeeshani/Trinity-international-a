@@ -212,4 +212,12 @@
   .cta-inner { align-items: flex-start; flex-direction: column; }
 }
 @media (max-width: 480px) { .services-grid, .why-grid { grid-template-columns: 1fr; } .why-card { text-align: left; display: grid; grid-template-columns: auto 1fr; column-gap: 14px; align-items: center; padding: 15px; } .why-icon { grid-row: span 2; margin: 0; } .why-card p { margin-top: 3px; } .hero-actions { align-items: stretch; flex-direction: column; } .hero-actions .button { width: 100%; } .hero-trust { gap: 11px; } }
+
+@media (max-width: 680px) {
+  .hero-slide-2 .hero-image-wrap { background: #0a4f9e url('../assets/images/findmyuni-hero-v2.png') center 38% / cover no-repeat; }
+  .hero-slide-2 .findmyuni-hero-video { display: none; }
+  .hero-slide-4 .hero-image-wrap { background: #172925 url('../assets/images/future-career-hero-still.png') center / cover no-repeat; }
+  .hero-slide-4 .future-career-video-backdrop,
+  .hero-slide-4 .future-career-hero-video { display: none; }
+}
 @media (prefers-reduced-motion: reduce) { .advisory-panel, .advisory-visible .advisory-panel, .why-card, .why-visible .why-card { opacity: 1; animation: none; transform: none; transition: none; } }

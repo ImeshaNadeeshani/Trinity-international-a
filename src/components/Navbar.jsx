@@ -11,6 +11,7 @@ const navLinks = [
   { label: 'Destinations', href: '/destinations', menu: true },
   { label: 'Success Stories', href: '/success-stories', route: true },
   { label: 'FindmyUni', href: '/findmyuni', route: true },
+  { label: 'Eligibility Check', href: '/eligibility-check', route: true },
   { label: 'Contact Us', href: '/contact', route: true },
 ]
 

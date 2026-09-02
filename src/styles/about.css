@@ -61,6 +61,8 @@
 .leader-photo-nishan-rubera img { object-position: 50% 0; transform: translateY(-21px) scale(1.13); transform-origin: center top; }
 .leader-photo-ananthi-vythilingam img { object-position: 50% 12%; transform: scale(1.04); transform-origin: center top; }
 .leader-photo-sepalika-sewwandi img { object-position: 50% 15%; transform: scale(1.04); transform-origin: center top; }
+.leader-photo-imesha-nadeeshani img { object-position: 50% 45%; }
+.leader-photo-richie-weerakoon img { object-position: 50% 18%; }
 .about-leader-card h3 { margin-top: 7px; color: var(--dark-green); font: 700 .66rem/1.2 'DM Sans', Arial, sans-serif; }
 .about-leader-card p { margin-top: 3px; color: var(--body-text); font-size: .59rem; }
 .network-section { padding: 12px 0 20px; }

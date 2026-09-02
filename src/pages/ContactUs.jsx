@@ -95,9 +95,9 @@ function ContactUs() {
         <div className="container map-panel">
           <iframe
             title="Trinity International at No. 27 Layards Road, Colombo 05"
-            src="https://www.google.com/maps?q=6.8847401,79.8621081&z=17&output=embed"
+            src="https://www.openstreetmap.org/export/embed.html?bbox=79.8568%2C6.8807%2C79.8674%2C6.8888&layer=mapnik&marker=6.8847401%2C79.8621081"
             loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
+            referrerPolicy="strict-origin-when-cross-origin"
             allowFullScreen
           />
         </div>

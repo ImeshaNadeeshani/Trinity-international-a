@@ -128,6 +128,15 @@
 @media (max-width: 680px) { .about-hero,.about-hero-grid { min-height: 650px; }.about-hero-grid { display: flex; align-items: flex-end; }.about-hero-copy { padding: 35px 20px 48px; }.about-hero-copy h1 { font-size: clamp(2.35rem,11vw,3rem); }.about-hero-visual { min-height: 650px; }.about-hero-visual img { right: 0; width: 100%; object-position: 68% center; }.purpose-grid { gap: 0; }.purpose-card { min-height: 230px; }.story-grid { display: block; }.story-copy { padding: 15px 4px 40px; }.office-visual { min-height: 310px; }.director-copy { min-height: 830px; padding: 42px 25px 500px; }.director-copy h2 { font-size: 2.5rem; }.director-copy p { margin-top: 22px; font-size: .98rem; line-height: 1.7; }.director-copy > img { top: auto; right: auto; bottom: 0; left: 0; width: 100%; height: 470px; max-height: none; object-fit: cover; object-position: center 22%; transform: none; }.leadership-grid { padding: 18px 9px; }.about-leader-card { width: 145px; }.leader-photo { height: 165px; }.network-inner { padding: 28px 22px; }.network-copy h2 { font-size: 2rem; } }
 
 @media (max-width: 680px) {
+  .about-hero-copy { width: 100%; max-width: 100%; overflow: hidden; }
+  .about-hero-copy h1 { max-width: 100%; font-size: clamp(2rem,10vw,2.65rem); white-space: normal; overflow-wrap: anywhere; }
+  .about-metrics { padding: 24px 0 50px; }
+  .about-metrics-grid { grid-template-columns: repeat(2,minmax(0,1fr)); padding: 18px 14px; }
+  .about-metric { min-width: 0; min-height: 92px; gap: 8px; padding: 12px 8px; overflow: hidden; }
+  .about-metric svg { width: 25px; height: 25px; }
+  .about-metric strong { font-size: clamp(1.35rem,7vw,1.75rem); white-space: nowrap; }
+  .about-metric span { margin-top: 6px; font-size: .62rem; line-height: 1.35; white-space: normal; }
+  .about-metric:last-child { padding-top: 16px; }
   .leadership-section { padding: 58px 0 68px; }
   .leadership-grid { gap: 30px; padding: 18px 12px; }
   .leadership-group-title { font-size: .95rem; }
@@ -136,21 +145,20 @@
   .leadership-group:last-child .about-leader-card,
   .leadership-group:last-child .about-leader-card:nth-child(5),
   .leadership-group:last-child .about-leader-card:nth-child(8),
-  .about-leader-card { grid-column: auto; width: 100%; min-width: 0; }
-  .leader-photo { height: 190px; background: linear-gradient(180deg,#edf8f1,#cce9d6); }
+  .about-leader-card { display: flex; grid-column: auto; width: 100%; min-width: 0; height: 100%; flex-direction: column; }
+  .leader-photo { height: 210px; overflow: hidden; background: linear-gradient(180deg,#edf8f1,#cce9d6); }
   .leader-photo img,
   .leader-photo-stefan-shanmugarajah img,
   .leader-photo-nishan-rubera img,
   .leader-photo-ananthi-vythilingam img,
   .leader-photo-sepalika-sewwandi img,
   .leader-photo-imesha-nadeeshani img,
-  .leader-photo-richie-weerakoon img { width: 100%; height: 100%; object-fit: contain; object-position: center bottom; transform: none; }
+  .leader-photo-richie-weerakoon img { width: 100%; height: 100%; object-fit: cover; object-position: center top; transform: none; }
   .about-leader-card h3 { margin: 12px 11px 0; font-size: .78rem; line-height: 1.35; }
-  .about-leader-card p { margin: 5px 11px 13px; font-size: .57rem; line-height: 1.45; }
+  .about-leader-card p { margin: 5px 11px 13px; font-size: .57rem; line-height: 1.45; overflow-wrap: anywhere; }
 }
 
 @media (max-width: 380px) {
-  .leaders-grid,
-  .leadership-group:last-child .leaders-grid { grid-template-columns: 1fr; }
-  .leader-photo { height: 280px; }
+  .leader-photo { height: 185px; }
+  .about-leader-card h3 { font-size: .72rem; }
 }

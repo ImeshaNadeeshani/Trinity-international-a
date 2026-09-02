@@ -109,7 +109,7 @@ function About() {
         </div>
       </section>
 
-      <section className="about-metrics" aria-label="Trinity International achievements">
+      <section className="about-metrics" id="about-metrics" aria-label="Trinity International achievements">
         <div className="container about-metrics-grid">
           {metrics.map(({ value, label, icon: Icon }) => <div className="about-metric" key={label}><Icon size={31} /><div><strong>{value}</strong><span>{label}</span></div></div>)}
         </div>
@@ -123,7 +123,7 @@ function About() {
         </div>
       </section>
 
-      <section className="leadership-section">
+      <section className="leadership-section" id="leadership">
         <div className="container"><SectionTitle eyebrow="Our people" title="Leadership Board" subtitle="Meet the people who make every student journey personal, informed and possible." /><div className="leadership-grid"><LeadershipGroup title="Board of Directors" icon={UsersRound} members={leaders.board} /><LeadershipGroup title="Leadership Team" icon={UsersRound} members={leaders.team} /></div></div>
       </section>
 

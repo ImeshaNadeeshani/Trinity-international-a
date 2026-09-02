@@ -26,6 +26,10 @@
 .form-grid textarea { min-height: 112px; resize: vertical; }
 .contact-submit { display: flex; width: 100%; align-items: center; justify-content: center; gap: 10px; margin-top: 22px; padding: 15px; color: #fff; background: linear-gradient(90deg,#087d50,#16a566); border: 1px solid #48ca7b; border-radius: 999px; cursor: pointer; font-size: .83rem; font-weight: 800; transition: transform .2s,filter .2s; }
 .contact-submit:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.contact-submit:disabled { cursor: wait; filter: grayscale(.25); opacity: .72; transform: none; }
+.form-status { margin-top: 17px; padding: 11px 14px; border-radius: 9px; font-size: .82rem; font-weight: 700; line-height: 1.45; }
+.form-status-success { color: #c8f6d7; background: rgba(22,165,102,.18); border: 1px solid rgba(72,202,123,.48); }
+.form-status-error { color: #ffe1e1; background: rgba(190,45,45,.2); border: 1px solid rgba(255,129,129,.45); }
 .contact-location-section { padding: 58px 0 72px; background: #020c08; }
 .location-heading { text-align: center; }
 .location-heading h2 { margin-top: 6px; color: #fff; font-size: clamp(2rem,4vw,3rem); }

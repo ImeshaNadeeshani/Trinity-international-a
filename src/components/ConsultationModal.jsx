@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { ArrowRight, X } from 'lucide-react'
+import { insertSubmission } from '../lib/supabase'
 
 function ConsultationModal({ onClose }) {
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
     const onKeyDown = (event) => {
@@ -17,9 +20,34 @@ function ConsultationModal({ onClose }) {
     }
   }, [onClose])
 
-  const submitForm = (event) => {
+  const submitForm = async (event) => {
     event.preventDefault()
-    setSubmitted(true)
+    setSubmitting(true)
+    setErrorMessage('')
+
+    const data = new FormData(event.currentTarget)
+
+    try {
+      await insertSubmission('consultation_requests', {
+        name: data.get('name').trim(),
+        phone: data.get('phone').trim(),
+        email: data.get('email').trim().toLowerCase(),
+        age: Number(data.get('age')),
+        destination: data.get('destination'),
+        education: data.get('education').trim(),
+        ielts: data.get('ielts').trim(),
+        service: data.get('service'),
+        interest: data.get('interest'),
+        profile: data.get('profile'),
+        message: data.get('message').trim() || null,
+      })
+      setSubmitted(true)
+    } catch (error) {
+      console.error('Consultation submission failed:', error)
+      setErrorMessage('We could not save your request. Please try again or call us directly.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return createPortal(
@@ -51,7 +79,10 @@ function ConsultationModal({ onClose }) {
               <label className="form-field"><span>Field of Interest</span><select name="interest" defaultValue="" required><option value="" disabled>Click and select</option><option>Business &amp; Management</option><option>Computing &amp; IT</option><option>Engineering</option><option>Health Sciences</option><option>Hospitality &amp; Tourism</option><option>Other</option></select></label>
               <label className="form-field"><span>Which Best Describes You?</span><select name="profile" defaultValue="" required><option value="" disabled>Click and select</option><option>School Leaver</option><option>Foundation Level</option><option>HND</option><option>Bachelor&apos;s (3 Years)</option><option>Bachelor&apos;s Honours (4 Years)</option><option>Master&apos;s (1 Year)</option><option>Master&apos;s (2 Years)</option></select></label>
               <label className="form-field form-field-wide"><span>Message</span><textarea name="message" rows="4" placeholder="Tell us more" /></label>
-              <button className="consultation-submit" type="submit">Book My Consultation <ArrowRight size={18} /></button>
+              {errorMessage && <p className="consultation-error" role="alert">{errorMessage}</p>}
+              <button className="consultation-submit" type="submit" disabled={submitting}>
+                {submitting ? 'Submitting…' : 'Book My Consultation'} <ArrowRight size={18} />
+              </button>
             </form>
           </>
         )}

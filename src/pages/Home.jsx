@@ -111,7 +111,7 @@ function FeatureList({ items }) {
   )
 }
 
-function Home() {
+function Home({ onBookConsultation }) {
   const [activeSlide, setActiveSlide] = useState(0)
   const [activeService, setActiveService] = useState(null)
   const [advisoryVisible, setAdvisoryVisible] = useState(false)
@@ -303,7 +303,7 @@ function Home() {
       <section className="cta-section" id="contact">
         <div className="container cta-inner">
           <div><p className="eyebrow">Your future is closer than it feels</p><h2>Ready to Start Your Global Journey?</h2><p>Let's find the right next step for you.</p></div>
-          <a className="button button-primary" href="mailto:Admin@tihsl.com">Book a Free Consultation <ArrowUpRight size={18} /></a>
+          <button className="button button-primary" type="button" onClick={onBookConsultation}>Book a Free Consultation <ArrowUpRight size={18} /></button>
         </div>
       </section>
     </main>

@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { ArrowUpRight, ChevronDown, Menu, X } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import DestinationMegaMenu from './destinations/DestinationMegaMenu'
-import ConsultationModal from './ConsultationModal'
 import logoAsset from '../assets/logo/trinity-official-logo.jpeg'
 import '../styles/navbar.css'
 
@@ -15,10 +14,9 @@ const navLinks = [
   { label: 'Contact Us', href: '/contact', route: true },
 ]
 
-function Navbar() {
+function Navbar({ onBookConsultation }) {
   const [menuOpenPath, setMenuOpenPath] = useState(null)
   const [destinationsOpenPath, setDestinationsOpenPath] = useState(null)
-  const [consultationOpen, setConsultationOpen] = useState(false)
   const location = useLocation()
   const menuOpen = menuOpenPath === location.pathname
   const destinationsOpen = destinationsOpenPath === location.pathname
@@ -55,9 +53,8 @@ function Navbar() {
           ))}
         </nav>
 
-        <button className="nav-cta" type="button" onClick={() => setConsultationOpen(true)}>Book a Consultation <ArrowUpRight size={15} /></button>
+        <button className="nav-cta" type="button" onClick={onBookConsultation}>Book a Consultation <ArrowUpRight size={15} /></button>
       </div>
-      {consultationOpen && <ConsultationModal onClose={() => setConsultationOpen(false)} />}
     </header>
   )
 }

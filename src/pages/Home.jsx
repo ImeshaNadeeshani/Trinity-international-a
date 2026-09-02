@@ -212,6 +212,7 @@ function Home({ onBookConsultation }) {
                   <video className="future-career-hero-video" autoPlay muted loop playsInline aria-label="Student exploring future career opportunities">
                     <source src="/videos/future-career-video-3.mp4" type="video/mp4" />
                   </video>
+                  <span className="future-career-watermark-cover" aria-hidden="true" />
                 </>
               )}
             </div>

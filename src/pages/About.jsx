@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import SectionTitle from '../components/SectionTitle'
 import aboutStudents from '../assets/images/about-student-collage-v2.png'
+import aboutStudentsMobile from '../assets/images/about-mobile-v2.png'
 import stefanShanmugarajah from '../assets/images/stefan-shanmugarajah.png'
 import dehamiDirector from '../assets/images/dehami-director.png'
 import pasterHeshan from '../assets/images/paster-heshan-rubera.png'
@@ -88,7 +89,10 @@ function About() {
       <section className="about-hero">
         <div className="about-hero-visual">
           <div className="about-orbit" aria-hidden="true"><Plane size={24} /></div>
-          <img src={aboutStudents} alt="A diverse group of students preparing for their academic future" />
+          <picture>
+            <source media="(max-width: 680px)" srcSet={aboutStudentsMobile} />
+            <img src={aboutStudents} alt="Students discussing their international study plans with an education counsellor" />
+          </picture>
         </div>
         <div className="container about-hero-grid">
           <div className="about-hero-copy">

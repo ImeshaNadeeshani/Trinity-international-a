@@ -216,7 +216,7 @@
 @media (max-width: 680px) {
   .hero-slide-2 .hero-image-wrap { background: #0a4f9e url('../assets/images/findmyuni-hero-v2.png') center 38% / cover no-repeat; }
   .hero-slide-2 .findmyuni-hero-video { display: none; }
-  .hero-slide-4 .hero-image-wrap { background: #172925 url('../assets/images/future-career-hero-clean.png') 58% center / cover no-repeat; }
+  .hero-slide-4 .hero-image-wrap { background: #172925 url('../assets/images/future-career-mobile-v2.png') center top / cover no-repeat; }
   .hero-slide-4 .future-career-video-backdrop,
   .hero-slide-4 .future-career-hero-video { display: none; }
   :is(.hero-slide-1, .hero-slide-2, .hero-slide-4) .hero-copy { right: auto; left: 7%; width: min(86%, 410px); transform: none; }

@@ -5,7 +5,8 @@ import { useState } from 'react'
 import { insertSubmission } from '../lib/supabase'
 import '../styles/contact.css'
 
-const mapUrl = 'https://www.google.com/maps/place/27+Layards+Rd,+Colombo+00500/@6.8847401,79.8595332,17z/data=!3m1!4b1!4m6!3m5!1s0x3ae25bc598e03331:0xfacabfeab9eb183b!8m2!3d6.8847401!4d79.8621081!16s%2Fg%2F11q8fx0dmx?entry=ttu'
+const mapUrl = 'https://www.google.com/maps?cid=18071467469639981115&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNlEAMYASAF&hl=en-US&source=embed'
+const mapEmbedUrl = `${mapUrl}&output=embed`
 
 const contactDetails = [
   { icon: MapPin, title: 'Our Office', content: <>No. 27, Layards Road,<br />Colombo 05, Sri Lanka</> },
@@ -95,7 +96,7 @@ function ContactUs() {
         <div className="container map-panel">
           <iframe
             title="Trinity International at No. 27 Layards Road, Colombo 05"
-            src="https://www.openstreetmap.org/export/embed.html?bbox=79.8568%2C6.8807%2C79.8674%2C6.8888&layer=mapnik&marker=6.8847401%2C79.8621081"
+            src={mapEmbedUrl}
             loading="lazy"
             referrerPolicy="strict-origin-when-cross-origin"
             allowFullScreen

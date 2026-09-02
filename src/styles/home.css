@@ -216,26 +216,28 @@
 @media (max-width: 680px) {
   .hero-slide-2 .hero-image-wrap { background: #0a4f9e url('../assets/images/findmyuni-hero-v2.png') center 38% / cover no-repeat; }
   .hero-slide-2 .findmyuni-hero-video { display: none; }
-  .hero-slide-4 .hero-image-wrap { background: #172925 url('../assets/images/future-career-hero-clean.png') 56% center / cover no-repeat; }
+  .hero-slide-4 .hero-image-wrap { background: #172925 url('../assets/images/future-career-hero-clean.png') 58% center / cover no-repeat; }
   .hero-slide-4 .future-career-video-backdrop,
   .hero-slide-4 .future-career-hero-video { display: none; }
-  .hero-slide-4 .hero-copy { right: auto; bottom: 48px; left: 14px; width: calc(100% - 28px); max-width: none; padding: 17px 16px; }
+  :is(.hero-slide-1, .hero-slide-2, .hero-slide-4) .hero-copy { right: auto; left: 7%; width: min(86%, 410px); transform: none; }
+  .hero-slide-4 .hero-copy { bottom: 48px; max-width: none; padding: 15px 16px; }
   .hero-slide-4 .hero-copy h1 { max-width: 100%; font-size: clamp(1.45rem,7vw,1.85rem); line-height: 1.08; overflow-wrap: anywhere; }
   .hero-slide-4 .future-career-title span { display: inline; }
   .hero-slide-4 .future-career-title span::after { content: ' '; }
-  .hero-slide-4 .hero-dots,
-  .hero-slide-3 .hero-dots { top: auto; bottom: 10px; }
+  .hero-slide-4 .hero-dots { top: auto; bottom: 10px; }
 
   .hero-slide-3 .hero-image-wrap { background: #02070d url('../assets/images/homepage-award-winning.png') 63% center / cover no-repeat; }
   .hero-slide-3 .award-winning-hero-image { display: none; }
-  .hero-slide-3 .hero-image-wrap::after { background: linear-gradient(to bottom,rgba(1,9,20,.12),rgba(1,9,20,.72) 48%,#020914 100%); }
-  .hero-slide-3 .hero-copy { right: auto; bottom: 24px; left: 16px; width: calc(100% - 32px); max-width: none; padding: 16px 16px 17px; overflow: hidden; }
-  .hero-slide-3 .hero-copy h1 { max-width: 100%; font-size: clamp(1.65rem,7.8vw,2rem); line-height: 1.07; overflow-wrap: anywhere; }
-  .hero-slide-3 .hero-copy .eyebrow { margin-bottom: 7px; font-size: .61rem; }
-  .hero-slide-3 .hero-intro { margin-top: 9px; font-size: .78rem; line-height: 1.45; }
-  .hero-slide-3 .hero-actions { margin-top: 12px; }
-  .hero-slide-3 .hero-actions .button { min-height: 44px; padding: 10px 15px; }
-  .award-proof-gallery { top: 15px; right: auto; left: 16px; display: grid; grid-template-columns: minmax(0,1.35fr) minmax(0,.85fr); gap: 9px; width: calc(100% - 32px); max-width: none; height: 205px; transform: none; }
+  .hero-slide-3 .hero-image-wrap::after { background: linear-gradient(to bottom,rgba(1,9,20,.42),rgba(1,9,20,.62) 48%,#020914 100%); }
+  .hero-slide-3,
+  .hero-slide-3 .hero-layout { min-height: 720px; }
+  .hero-slide-3 .hero-copy { top: 16px; right: auto; bottom: auto; left: 7%; width: min(86%, 410px); max-width: none; padding: 14px 16px 15px; overflow: hidden; transform: none; }
+  .hero-slide-3 .hero-copy h1 { max-width: 100%; font-size: clamp(1.45rem,6.8vw,1.85rem); line-height: 1.06; overflow-wrap: anywhere; }
+  .hero-slide-3 .hero-copy .eyebrow { margin-bottom: 6px; font-size: .58rem; }
+  .hero-slide-3 .hero-intro { margin-top: 8px; font-size: .73rem; line-height: 1.4; }
+  .hero-slide-3 .hero-actions { margin-top: 10px; }
+  .hero-slide-3 .hero-actions .button { min-height: 42px; padding: 9px 14px; }
+  .award-proof-gallery { top: 315px; right: auto; left: 16px; display: grid; grid-template-columns: minmax(0,1.35fr) minmax(0,.85fr); align-items: stretch; gap: 10px; width: calc(100% - 32px); max-width: none; height: 245px; transform: none; }
   .award-proof-card,
   .award-proof-card--ceremony,
   .award-proof-card--press { position: relative; inset: auto; width: 100%; height: 100%; aspect-ratio: auto; transform: none; }
@@ -243,5 +245,16 @@
   .award-proof-card--press img { object-fit: cover; object-position: center top; }
   .award-proof-card--ceremony figcaption { top: 7px; right: 7px; padding: 4px 6px; font-size: .43rem; }
   .award-proof-card--press figcaption { font-size: .43rem; }
+  .hero-slide-3 .hero-carousel-controls { top: auto; bottom: 72px; }
+  .hero-slide-3 .hero-dots { top: auto; bottom: 18px; }
+}
+
+@media (max-width: 390px) {
+  .hero-slide-3,
+  .hero-slide-3 .hero-layout { min-height: 700px; }
+  .hero-slide-3 .hero-copy { top: 12px; left: 7%; width: 86%; padding: 12px 14px 13px; }
+  .hero-slide-3 .hero-copy h1 { font-size: 1.38rem; }
+  .hero-slide-3 .hero-intro { font-size: .69rem; }
+  .award-proof-gallery { top: 300px; left: 12px; gap: 7px; width: calc(100% - 24px); height: 225px; }
 }
 @media (prefers-reduced-motion: reduce) { .advisory-panel, .advisory-visible .advisory-panel, .why-card, .why-visible .why-card { opacity: 1; animation: none; transform: none; transition: none; } }

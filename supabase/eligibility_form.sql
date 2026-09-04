@@ -13,6 +13,12 @@ create table if not exists public.eligibility_submissions (
 
 alter table public.eligibility_submissions enable row level security;
 alter table public.eligibility_submissions add column if not exists assessment jsonb;
+grant usage on schema public to anon, authenticated;
+grant insert on table public.eligibility_submissions to anon, authenticated;
+grant usage, select on sequence public.eligibility_submissions_id_seq to anon, authenticated;
+
+drop policy if exists "Allow anonymous eligibility submissions"
+  on public.eligibility_submissions;
 create policy "Allow anonymous eligibility submissions"
   on public.eligibility_submissions for insert to anon, authenticated
   with check (true);
@@ -27,6 +33,8 @@ values (
 )
 on conflict (id) do nothing;
 
+drop policy if exists "Allow anonymous eligibility document uploads"
+  on storage.objects;
 create policy "Allow anonymous eligibility document uploads"
   on storage.objects for insert to anon, authenticated
   with check (bucket_id = 'eligibility-documents');

@@ -157,8 +157,8 @@ function Home({ onBookConsultation }) {
             {activeSlide === 0 ? (
               <>
                 <p className="eyebrow"><Sparkles size={15} /> Study, migrate, thrive</p>
-                <h1>Your Global Future <span>Starts with Trinity</span></h1>
-                <p className="hero-intro">Trinity International helps students and professionals achieve their global ambitions through trusted education guidance, migration support and visa services.</p>
+                <h1>Study Abroad Consultants <span>in Sri Lanka</span></h1>
+                <p className="hero-intro">Trinity International helps Sri Lankan students choose the right country, university and course through trusted application, scholarship and student visa guidance.</p>
                 <div className="hero-actions">
                   <a className="button button-light" href="#services">Explore Services <ArrowRight size={18} /></a>
                 </div>

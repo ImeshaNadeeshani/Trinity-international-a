@@ -3,7 +3,7 @@ import { ArrowRight, ChevronDown } from 'lucide-react'
 function ServiceCard({ icon: Icon, image, label, title, description, features, action, href, expanded, onToggle }) {
   return (
     <article className={`service-card${expanded ? ' service-card-open' : ''}`}>
-      <img className="service-card-image" src={image} alt="" />
+      <img className="service-card-image" src={image} alt="" loading="lazy" decoding="async" />
       <button className="service-card-trigger" type="button" onClick={onToggle} aria-expanded={expanded}>
         <span className="service-icon"><Icon size={25} /></span>
         <span className="service-title">{title}</span>

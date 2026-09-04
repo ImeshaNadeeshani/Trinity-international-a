@@ -6,7 +6,6 @@ const band = (score) => {
   return { label: 'Weak – Not recommended at present', tone: 'weak', icon: '🔴' }
 }
 
-const optionScore = (value, scores, fallback = 0) => scores[value] ?? fallback
 const addFinding = (list, condition, text) => { if (condition) list.push(text) }
 
 export function assessEligibility(data) {
@@ -19,8 +18,8 @@ export function assessEligibility(data) {
   const englishScore = Number(data.get('test_score') || 0)
 
   const gpaPoints = gpa >= 3.5 ? 15 : gpa >= 3 ? 13 : gpa >= 2.5 ? 10 : gpa >= 2 ? 7 : 3
-  const relevancePoints = optionScore(data.get('academic_relevance'), { 'Unrelated field': 2, 'Some related modules': 5, 'Related degree': 8, 'Directly related degree + specialization': 10 })
-  const gapPoints = gap <= 1 ? 5 : gap <= 3 ? 4 : gap <= 5 ? 2 : data.get('gap_explained') === 'Yes' ? 2 : 0
+  const relevancePoints = 6
+  const gapPoints = gap <= 1 ? 5 : gap <= 3 ? 4 : gap <= 5 ? 2 : 0
   const academic = gpaPoints + relevancePoints + gapPoints
 
   const progressionPoints = 6
@@ -36,7 +35,7 @@ export function assessEligibility(data) {
 
   const liquidLkr = Number(data.get('liquid_funds_lkr') || 0)
   const coveragePoints = liquidLkr > 20000000 ? 15 : liquidLkr >= 15000000 ? 13 : liquidLkr >= 10000000 ? 10 : liquidLkr >= 8000000 ? 6 : 2
-  const sourcePoints = optionScore(data.get('funding_strength'), { 'Unclear / borrowed temporarily': 2, 'Third-party sponsor': 5, 'Parent / spouse with explainable income': 8, 'Self / parent / spouse + strong documented income / assets': 10 })
+  const sourcePoints = 6
   const sustainabilityPoints = 3
   const financial = coveragePoints + sourcePoints + sustainabilityPoints
 
@@ -46,13 +45,11 @@ export function assessEligibility(data) {
   const strengths = []
   const concerns = []
   addFinding(strengths, gpa >= 3, `GPA of ${gpa.toFixed(2)}/4.0 is in the ${gpa >= 3.5 ? 'excellent' : 'good'} internal band.`)
-  addFinding(strengths, relevancePoints >= 8, 'Previous studies are relevant to the intended course.')
   addFinding(strengths, experiencePoints >= 4, 'Relevant work experience strengthens the profile.')
   addFinding(strengths, english >= 8, 'English-language results meet a strong internal screening band.')
   addFinding(strengths, liquidLkr >= 15000000, 'Available liquid funds fall within a strong internal screening band.')
   addFinding(concerns, gpa < 2.5, 'Academic results may limit suitable institutions or programs.')
   addFinding(concerns, gap > 3, `A ${gap}-year study gap needs clear supporting evidence and explanation.`)
-  addFinding(concerns, relevancePoints <= 5, 'Course relevance needs stronger justification.')
   addFinding(concerns, english < 5, 'An acceptable English-language result is still required.')
   addFinding(concerns, liquidLkr < 10000000, 'Available liquid funds need further financial assessment.')
   addFinding(concerns, data.get('visa_refusal') === 'Yes', 'Visa refusal history requires detailed counsellor review.')

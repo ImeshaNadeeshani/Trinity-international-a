@@ -160,7 +160,7 @@ function Home({ onBookConsultation }) {
                 <h1>Study Abroad Consultants <span>in Sri Lanka</span></h1>
                 <p className="hero-intro">Trinity International helps Sri Lankan students choose the right country, university and course through trusted application, scholarship and student visa guidance.</p>
                 <div className="hero-actions">
-                  <a className="button button-light" href="#services">Explore Services <ArrowRight size={18} /></a>
+                  <a className="button button-light student-portal-button" href="https://app.coursefinder.ai/student-platform/26e13e15/sign-up" target="_blank" rel="noreferrer">Find Your University <ArrowUpRight size={18} /></a>
                 </div>
               </>
             ) : activeSlide === 1 ? (

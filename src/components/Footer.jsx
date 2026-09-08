@@ -25,6 +25,7 @@ function Footer({ onBookConsultation }) {
           <h3>Student Support</h3>
           <Link to="/findmyuni">FindmyUni</Link>
           <Link to="/contact">Contact Us</Link>
+          <a href="https://app.coursefinder.ai/student-platform/26e13e15/sign-up" target="_blank" rel="noreferrer">Student Portal</a>
           <button className="footer-link-button" type="button" onClick={onBookConsultation}>Free Consultation</button>
           <a href="https://wa.me/94707670670?text=Hello%20Trinity%20International%2C%20I%20would%20like%20to%20get%20more%20information." target="_blank" rel="noreferrer">WhatsApp Support</a>
         </div>

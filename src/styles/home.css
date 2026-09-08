@@ -23,6 +23,11 @@
 :is(.hero-slide-1, .hero-slide-2, .hero-slide-3, .hero-slide-4) .hero-intro { margin-right: 0; margin-left: 0; color: #e1f2e7; }
 :is(.hero-slide-1, .hero-slide-2, .hero-slide-3, .hero-slide-4) .hero-actions { justify-content: flex-start; }
 :is(.hero-slide-1, .hero-slide-2, .hero-slide-3, .hero-slide-4) .hero-actions .button-light { color: var(--dark-green); background: #fff; }
+.hero-actions .student-portal-button { color: #073d2c; background: linear-gradient(110deg,#fff8c9,#ffd85a); border: 2px solid #fff1a3; box-shadow: 0 0 0 4px rgba(255,216,90,.2),0 12px 27px rgba(0,31,20,.3); animation: portalButtonPulse 2.4s ease-in-out infinite; }
+.hero-actions .student-portal-button:hover { color: #073d2c; background: linear-gradient(110deg,#fffbe0,#ffe477); box-shadow: 0 0 0 6px rgba(255,216,90,.25),0 16px 32px rgba(0,31,20,.36); }
+.hero-actions .student-portal-button svg { stroke-width: 2.7; }
+@keyframes portalButtonPulse { 0%,100% { box-shadow: 0 0 0 4px rgba(255,216,90,.18),0 12px 27px rgba(0,31,20,.3); } 50% { box-shadow: 0 0 0 8px rgba(255,216,90,.08),0 15px 32px rgba(0,31,20,.36); } }
+@media (prefers-reduced-motion: reduce) { .hero-actions .student-portal-button { animation: none; } }
 .hero-slide-2 .hero-copy { overflow: hidden; background: linear-gradient(120deg,rgba(8,50,116,.97),rgba(15,96,176,.94)); border-color: rgba(210,231,255,.52); box-shadow: 0 22px 52px rgba(4,38,91,.3); }
 .findmyuni-brand { position: absolute; top: 20px; right: 22px; display: grid; width: 165px; height: 50px; padding: 7px 10px; place-items: center; background: rgba(255,255,255,.98); border: 1px solid rgba(213,230,255,.85); border-radius: 11px; box-shadow: 0 8px 20px rgba(0,30,75,.2); }
 .findmyuni-brand img { width: 100%; height: 100%; object-fit: contain; }

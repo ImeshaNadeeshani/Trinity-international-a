@@ -1,6 +1,6 @@
 import { BriefcaseBusiness, CheckCircle2, Compass, Sparkles, Target, UsersRound } from 'lucide-react'
 import { useEffect, useRef } from 'react'
-import findmyUniImage from '../assets/images/findmyuni-hero-v2.png'
+import findmyUniCampusHero from '../assets/images/findmyuni-campus-hero.png'
 import '../styles/findmyuni.css'
 
 const whyChooseFmu = [
@@ -32,7 +32,7 @@ function FindMyUni() {
   return (
     <main className="findmyuni-page">
       <section className="findmyuni-hero">
-        <video autoPlay muted loop playsInline poster={findmyUniImage} aria-hidden="true"><source src="/videos/findmyuni-hero.mp4" type="video/mp4" /></video>
+        <img src={findmyUniCampusHero} alt="Students walking outside their college campus" />
         <div className="findmyuni-hero-shade" />
         <div className="container findmyuni-hero-inner">
           <div className="findmyuni-hero-copy">

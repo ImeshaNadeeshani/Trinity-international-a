@@ -21,7 +21,7 @@ import ServiceCard from '../components/ServiceCard'
 import StatCard from '../components/StatCard'
 import SectionTitle from '../components/SectionTitle'
 import heroImage from '../assets/images/trinity-home-hero.png'
-import findmyUniHero from '../assets/images/findmyuni-hero-v2.png'
+import findmyUniCampusHero from '../assets/images/findmyuni-campus-hero.png'
 import findmyUniLogo from '../assets/images/findmyuni-logo-cropped.png'
 import awardWinningHero from '../assets/images/award-trophy-hero-v3.png'
 import awardCeremonyImage from '../assets/images/trinity-award-ceremony.jpeg'
@@ -34,7 +34,7 @@ import '../styles/home.css'
 
 const stats = [
   { value: '15+', label: 'Years of Expertise', icon: BadgeCheck },
-  { value: '5,000+', label: 'Students Placed Globally', icon: UsersRound },
+  { value: '1,500+', label: 'Students Placed Globally', icon: UsersRound },
   { value: '200+', label: 'Partner Campuses', icon: Landmark },
   { value: '95%', label: 'Visa Approval Rate', icon: ShieldCheck },
 ]
@@ -199,9 +199,7 @@ function Home({ onBookConsultation }) {
               {activeSlide === 0 ? (
                 <img src={heroImage} alt="Student ready to begin her international journey" />
               ) : activeSlide === 1 ? (
-                <video className="findmyuni-hero-video" autoPlay muted loop playsInline poster={findmyUniHero} aria-label="Students exploring local university opportunities with FindmyUni">
-                  <source src="/videos/findmyuni-hero.mp4" type="video/mp4" />
-                </video>
+                <img src={findmyUniCampusHero} alt="Students walking outside their Education College campus" />
               ) : activeSlide === 2 ? (
                 <img className="award-winning-hero-image" src={awardWinningHero} alt="Golden award trophy representing Trinity International's award-winning student visa consultancy" />
               ) : (

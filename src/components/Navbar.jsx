@@ -54,7 +54,10 @@ function Navbar({ onBookConsultation }) {
           ))}
         </nav>
 
-        <button className="nav-cta" type="button" onClick={onBookConsultation}>Book a Consultation <ArrowUpRight size={15} /></button>
+        <div className="nav-actions">
+          <button className="nav-cta" type="button" onClick={onBookConsultation}>Book a Consultation <ArrowUpRight size={15} /></button>
+          <Link className="nav-university-cta" to="/findmyuni" onClick={closeNavigation}>Find Your University <ArrowUpRight size={15} /></Link>
+        </div>
       </div>
     </header>
   )

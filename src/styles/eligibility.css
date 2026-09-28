@@ -1,6 +1,6 @@
 .eligibility-page { color: #365248; background: #f5faf7; }
-.eligibility-hero { position: relative; overflow: hidden; padding: 78px 0 70px; color: #d8ece1; background: radial-gradient(circle at 85% 15%,rgba(68,189,121,.25),transparent 30%),linear-gradient(125deg,#03170f,#063d2a); }
-.eligibility-hero::after { position: absolute; inset: 0; content: ''; opacity: .12; background-image: radial-gradient(#b6f0ca 1px,transparent 1px); background-size: 21px 21px; pointer-events: none; }
+.eligibility-hero { position: relative; overflow: hidden; padding: 78px 0 70px; color: #d8ece1; background: radial-gradient(circle at 85% 15%,rgba(68,189,121,.23),transparent 31%),linear-gradient(90deg,rgba(3,23,15,.96),rgba(3,55,38,.88) 52%,rgba(4,58,41,.72)),url('../assets/images/trinity-home-hero.png') center 42% / cover no-repeat; }
+.eligibility-hero::after { position: absolute; inset: 0; content: ''; opacity: .16; background-image: radial-gradient(#b6f0ca 1px,transparent 1px); background-size: 21px 21px; pointer-events: none; }
 .eligibility-hero-inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 330px; align-items: end; gap: 70px; }
 .eligibility-hero .eyebrow { color: #80e3a5; }
 .eligibility-hero h1 { max-width: 760px; color: #fff; font-size: clamp(2.5rem,5vw,4.7rem); line-height: 1.04; letter-spacing: -.055em; }

@@ -12,6 +12,7 @@ const navLinks = [
   { label: 'Success Stories', href: '/success-stories', route: true },
   { label: 'FindmyUni', href: '/findmyuni', route: true },
   { label: 'Eligibility Check', href: '/eligibility-check', route: true },
+  { label: 'Student Login', href: '/student-portal', route: true },
   { label: 'Contact Us', href: '/contact', route: true },
 ]
 
@@ -56,7 +57,7 @@ function Navbar({ onBookConsultation }) {
 
         <div className="nav-actions">
           <button className="nav-cta" type="button" onClick={onBookConsultation}>Book a Consultation <ArrowUpRight size={15} /></button>
-          <Link className="nav-university-cta" to="/findmyuni" onClick={closeNavigation}>Find Your University <ArrowUpRight size={15} /></Link>
+          <a className="nav-university-cta" href="https://app.coursefinder.ai/student-platform/26e13e15/sign-up" target="_blank" rel="noopener noreferrer" onClick={closeNavigation}>Find Your University <ArrowUpRight size={15} /></a>
         </div>
       </div>
     </header>

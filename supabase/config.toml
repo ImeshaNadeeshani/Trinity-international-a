@@ -1,0 +1,3 @@
+[functions.complete-agreement-signing]
+# This endpoint is a provider webhook and verifies its own HMAC signature.
+verify_jwt = false

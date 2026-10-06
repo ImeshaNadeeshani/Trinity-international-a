@@ -1,6 +1,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { PDFDocument, StandardFonts, rgb } from 'npm:pdf-lib@1.17.1'
 import { trinityLogoBase64 } from '../_shared/trinity-logo.ts'
+import { authenticated } from '../_shared/portal.ts'
 
 const cors = { 'Access-Control-Allow-Origin': Deno.env.get('PORTAL_ORIGIN') ?? '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type', 'Access-Control-Allow-Methods': 'POST, OPTIONS' }
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...cors, 'Content-Type': 'application/json' } })
@@ -9,6 +10,7 @@ const safeLine=(value:unknown)=>String(value??'').replace(/\s+/g,' ').replace(/[
 Deno.serve(async (request) => {
   if (request.method === 'OPTIONS') return new Response('ok', { headers: cors })
   if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405)
+  try{await authenticated(request,'generate-letter',20)}catch(e){return json({error:e.message},429)}
   const url = Deno.env.get('SUPABASE_URL')!, anon = Deno.env.get('SUPABASE_ANON_KEY')!, serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
   const authHeader = request.headers.get('Authorization')
   if (!authHeader) return json({ error: 'Authentication required' }, 401)
@@ -29,7 +31,7 @@ Deno.serve(async (request) => {
   if (existing) return json({ error: 'An approval letter already exists for this application.', reference_number: existing.reference_number }, 409)
   const [{ data: student }, { data: config }] = await Promise.all([
     admin.from('portal_profiles').select('student_number,full_name').eq('id', application.student_id).single(),
-    admin.from('trinity_configuration').select('registered_business_name,registered_address,official_email,approval_officer_name,approval_officer_designation').eq('id', true).single(),
+    admin.from('trinity_configuration').select('registered_business_name,registration_number,registered_address,official_email,approval_officer_name,approval_officer_designation').eq('id', true).single(),
   ])
   if (!student || !config) return json({ error: 'Student or Trinity configuration is missing.' }, 409)
   const approvalName=actor?.role==='board'?actor.full_name:config.approval_officer_name

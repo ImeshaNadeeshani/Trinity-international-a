@@ -26,6 +26,7 @@ Deno.serve(async(request)=>{
   if(sessionError||!session)return response({error:'Signing request not found.'},404)
   const {data:agreement,error:agreementError}=await db.from('student_agreements').select('*').eq('id',session.agreement_id).single()
   if(agreementError||!agreement)return response({error:'Signing agreement not found.'},404)
+  if(agreement.workflow_version===2)return response({error:'This agreement uses the student-first portal signature workflow.'},409)
   if(session.status!=='envelope_open')return response({ok:true,duplicate:true})
   const step=session.signer_role==='student'?'student':'head'
   if((step==='head'&&agreement.status!=='awaiting_head_signature')||(step==='student'&&agreement.status!=='awaiting_student_signature'))return response({error:'Agreement is not awaiting this signer.'},409)
@@ -43,6 +44,6 @@ Deno.serve(async(request)=>{
   await db.from('agreement_signing_sessions').update({status:'signed',signed_at:now}).eq('id',session.id)
   await db.from('agreement_signing_audit').insert({agreement_id:agreement.id,signer_id:session.signer_id,signer_role:step,action:step==='head'?'head_signed':'student_signed',document_sha256:hash})
   await db.from('application_activity').insert({application_id:agreement.application_id,actor_id:session.signer_id,event_type:step==='head'?'agreement_sent_to_student':'student_agreement_signed',details:{agreement_reference:agreement.reference_number,document_sha256:hash}})
-  await notify(db,agreement.student_id,step==='head'?'Your Trinity agreement is ready':'Your signed agreement is complete',step==='head'?'The Trinity authorized signatory has signed your agreement. Sign in to review and complete your signature.':'Both signatures have been recorded. Your completed agreement is available in the student portal.')
+  await notify(db,agreement.student_id,step==='head'?'Your Trinity agreement is ready':'Your signed agreement is complete',step==='head'?'The Trinity authorized signatory has signed your agreement. Sign in to review and complete your signature. Your payment schedule is now unlocked in Payments.':'Both signatures have been recorded. Your completed agreement is available in the student portal.')
   return response({ok:true,status:step==='head'?'awaiting_student_signature':'completed'})
 })

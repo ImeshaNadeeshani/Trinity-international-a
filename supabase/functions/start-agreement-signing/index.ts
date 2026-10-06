@@ -19,6 +19,7 @@ Deno.serve(async(request)=>{
     db.from('trinity_configuration').select('signature_provider').eq('id',true).single(),
   ])
   if(!agreement||!profile)return json({error:'Agreement not found.'},404)
+  if(agreement.workflow_version===2)return json({error:'Use the portal signature page for this agreement.'},409)
   const {data:template}=agreement.template_id?await db.from('agreement_templates').select('approval_status,active').eq('id',agreement.template_id).single():{data:null}
   if(!template||template.approval_status!=='approved'||!template.active)return json({error:'This agreement template is no longer approved for signature.'},409)
   const isHead=['head','delegate','signatory'].includes(profile.role)

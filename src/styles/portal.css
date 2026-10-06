@@ -1,4 +1,18 @@
 .portal-page{min-height:100vh;background:#f4f7fb;color:#23334c;font-family:Inter,'DM Sans',Arial,sans-serif;font-size:14px}
+.portal-form-grid,.portal-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 22px}
+.portal-detail-grid dt{color:#718097;font-size:.75rem;margin-top:14px}.portal-detail-grid dd{margin:5px 0;overflow-wrap:anywhere}
+.portal-action-row{display:flex;gap:12px;flex-wrap:wrap}.portal-payment-section,.portal-student-detail,.portal-agreement-review{margin-top:24px;padding-top:20px;border-top:1px solid #e4eaf0}
+.portal-document-checklist{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}.portal-document-checklist .portal-tag{white-space:normal}
+.portal-pdf-viewer{display:block;width:100%;height:640px;border:1px solid #dbe3eb;border-radius:12px;margin:20px 0;background:#f4f7fb}
+.portal-signature-canvas{display:block;width:100%;max-width:800px;aspect-ratio:10/3;touch-action:none;background:#fff;border:2px dashed #91b7a6;border-radius:12px;margin:15px 0;cursor:crosshair}
+.portal-signature-preview{display:block;max-width:min(100%,400px);max-height:150px;object-fit:contain;background:white;padding:10px;border:1px solid #dbe3eb;border-radius:8px}
+.portal-correction{margin-top:25px;padding-top:18px;border-top:1px solid #e4eaf0}.portal-ocr-review pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.8rem;padding:12px;background:#f4f7fb;border-radius:8px}
+.portal-workflow{list-style:none;margin:22px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.portal-workflow li{display:grid;grid-template-columns:32px minmax(0,1fr);column-gap:10px;align-items:center;padding:14px;background:#f6f8fb;border:1px solid #e4eaf0;border-radius:10px}
+.portal-workflow li>span{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#e6ebf1;color:#66758a;grid-row:span 2}.portal-workflow strong{font-size:.79rem}.portal-workflow small{color:#7a8798;font-size:.7rem;margin-top:3px}
+.portal-workflow li.done>span{background:#d9f4e5;color:#07834d}.portal-workflow li.current{border-color:#07834d;background:#f0faf5}.portal-workflow li.current>span{background:#07834d;color:white}
+@media(max-width:700px){.portal-form-grid,.portal-detail-grid{grid-template-columns:1fr}.portal-workflow{grid-template-columns:1fr 1fr;gap:8px}.portal-workflow li{padding:10px;grid-template-columns:26px minmax(0,1fr);gap:6px}.portal-workflow li>span{width:25px;height:25px}.portal-pdf-viewer{height:420px}.portal-action-row>*{flex:1 1 40%}}
+@media(max-width:390px){.portal-workflow{grid-template-columns:1fr}}
 .portal-page *{box-sizing:border-box}
 .portal-topbar{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,4vw,58px);background:#fff;border-bottom:1px solid #e8edf2}
 .portal-brand{display:flex;align-items:center;gap:11px;color:#102949;font-size:.95rem;font-weight:800}

@@ -1,4 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import { authenticated } from '../_shared/portal.ts'
 
 const cors={ 'Access-Control-Allow-Origin':Deno.env.get('PORTAL_ORIGIN')??'*','Access-Control-Allow-Headers':'authorization, x-client-info, apikey, content-type','Access-Control-Allow-Methods':'POST, OPTIONS' }
 const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...cors,'Content-Type':'application/json'}})
@@ -6,6 +7,7 @@ const base64=(bytes:Uint8Array)=>{let binary='';for(let i=0;i<bytes.length;i+=0x
 Deno.serve(async(request)=>{
   if(request.method==='OPTIONS')return new Response('ok',{headers:cors})
   if(request.method!=='POST')return json({error:'Method not allowed'},405)
+  try{await authenticated(request,'scan-document',40)}catch(e){return json({error:e.message},429)}
   const auth=request.headers.get('Authorization');if(!auth)return json({error:'Authentication required'},401)
   const url=Deno.env.get('SUPABASE_URL')!,anon=Deno.env.get('SUPABASE_ANON_KEY')!,service=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
   const client=createClient(url,anon,{global:{headers:{Authorization:auth}}}),{data:{user},error:authError}=await client.auth.getUser()
@@ -25,6 +27,8 @@ Deno.serve(async(request)=>{
   const {data:file,error:fileError}=await db.storage.from('student-private-documents').download(doc.storage_path)
   if(fileError||!file)return json({scan_status:'pending',reason:'Document scan is unavailable.'})
   const bytes=new Uint8Array(await file.arrayBuffer())
+  const actualType=bytes[0]===0x89&&bytes[1]===0x50&&bytes[2]===0x4e&&bytes[3]===0x47?'image/png':bytes[0]===0xff&&bytes[1]===0xd8&&bytes[2]===0xff?'image/jpeg':new TextDecoder().decode(bytes.slice(0,5))==='%PDF-'?'application/pdf':null
+  if(bytes.length>10485760||actualType!==doc.mime_type)return json({scan_status:'pending',reason:'File contents do not match an allowed PDF, JPG or PNG. Upload a valid document.'},422)
   const sha=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))).map(b=>b.toString(16).padStart(2,'0')).join('')
   let response:Response
   try{response=await fetch(new URL('/scan',endpoint),{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({document_id:doc.id,file_name:doc.file_name,mime_type:doc.mime_type,sha256:sha,base64:base64(bytes)}),signal:AbortSignal.timeout(30000)})}catch{return json({scan_status:'pending',reason:'Configured scanner is unavailable.'})}

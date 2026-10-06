@@ -1,0 +1,1 @@
+export const agreementLabel = status => ({ awaiting_student_signature: 'Ready for your signature', awaiting_head_signature: 'Awaiting Trinity approval', completed: 'Agreement completed', voided: 'Correction requested' }[status] || status)

@@ -1,6 +1,8 @@
 # Portal server functions
 
-Apply `../student_portal.sql` and then `../workflow_extensions.sql` in the Supabase SQL editor. Deploy these functions with the Supabase CLI after setting the environment secrets below. The browser never receives service-role, scanner, signing or email credentials.
+For a fresh portal setup, apply these scripts in order in the Supabase SQL Editor: `../student_portal.sql`, `../workflow_extensions.sql`, `../document_automation.sql`, `../student_workflow.sql`, then `../payment_workflow.sql`. For an existing installation, apply only the missing scripts; some scripts are not rerunnable. Deploy these functions with the Supabase CLI after setting the environment secrets below. The browser never receives service-role, scanner, signing or email credentials.
+
+If the portal reports that `public.portal_payments` is missing from the schema cache, check `select to_regclass('public.portal_payments');`. A null result means the table is missing: apply `payment_workflow.sql` after its prerequisites. If the table exists, inspect API permissions and reload the schema cache with `notify pgrst, 'reload schema';`. Creating payment tables does not create student agreements; staff must generate those separately.
 
 ## First administrator
 

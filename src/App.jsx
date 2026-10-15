@@ -46,6 +46,7 @@ function AppShell() {
           <Route path="/findmyuni" element={<FindMyUni />} />
           <Route path="/eligibility-check" element={<EligibilityCheck />} />
           <Route path="/student-portal" element={<StudentPortal />} />
+          <Route path="/student-portal/agreements" element={<StudentPortal defaultView="agreements" />} />
           <Route path="/student-portal/preview" element={<StudentPortalPreview />} />
           <Route path="/document-verification" element={<StudentPortal defaultView="documents" />} />
           <Route path="/development-plan" element={<DevelopmentPlan />} />

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { FileText, PenLine, ShieldCheck, LockKeyhole } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { invokePortal } from '../../lib/portalFunctions'
@@ -10,6 +10,16 @@ export default function AgreementWorkspace({ agreements, profile, onChanged, man
   const [signature, setSignature] = useState(''), [method, setMethod] = useState('drawn'), [consent, setConsent] = useState(false)
   const [reason, setReason] = useState(''), [drawing, setDrawing] = useState(false)
   const canvas = useRef(null), previous = useRef(null)
+  const autoOpened = useRef(false)
+  useEffect(() => {
+    if (management || autoOpened.current) return
+    const latest = agreements.find(a => a.status !== 'voided' && (a.completed_pdf_path || a.student_signed_pdf_path || a.private_pdf_path))
+    if (!latest) return
+    autoOpened.current = true
+    review(latest)
+  // Open once when the student's agreements arrive; manual selection remains available.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [agreements, management])
   const eligible = management ? agreements.filter(a => a.workflow_version === 2 && a.status === 'awaiting_head_signature') : agreements
   const canSign = selected?.workflow_version === 2 && (management ? ['head','delegate','signatory'].includes(profile.role) && selected.status === 'awaiting_head_signature' : selected.student_id === profile.id && selected.status === 'awaiting_student_signature')
   async function download(agreement) {

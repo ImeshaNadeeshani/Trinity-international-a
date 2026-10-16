@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, ChevronRight, CircleAlert, FileText, LogOut, ShieldCheck, Upload, UserRound, Bell, LockKeyhole, LayoutDashboard, ClipboardList, FolderOpen, CreditCard, MessageCircle, Settings, Plane } from 'lucide-react'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
 import '../styles/portal.css'
 import { ExtractedDetails } from '../components/DocumentAutomation'
 import { invokePortal } from '../lib/portalFunctions'
+import { loadPortalSnapshot, staffRoles } from '../lib/portalData.mjs'
+import { downloadPrivateFile } from '../lib/privateFiles'
 import AgreementWorkspace from '../components/portal/AgreementWorkspace'
 import ProfileForm from '../components/portal/ProfileForm'
 import WorkflowProgress from '../components/portal/WorkflowProgress'
@@ -13,9 +15,7 @@ import Payments from '../components/portal/Payments'
 import AgreementGeneration from '../components/portal/AgreementGeneration'
 import referenceAgreement from '../assets/templates/service-agreement-reference.txt?raw'
 
-const categories = [['nic_front','NIC ? Front'],['nic_back','NIC ? Back'],['passport','Passport'],['photograph','Passport photograph'],['education','Educational certificates'],['transcript','Academic transcripts'],['english_qualification','English language certificates'],['cv','CV'],['financial','Financial documents'],['other','Other supporting documents']]
-const staffRoles = ['board','admin','head','delegate','signatory','legal_reviewer']
-const phoneCountryCodes = [['+94','Sri Lanka (+94)'],['+61','Australia (+61)'],['+1','Canada / United States (+1)'],['+86','China (+86)'],['+33','France (+33)'],['+49','Germany (+49)'],['+91','India (+91)'],['+353','Ireland (+353)'],['+81','Japan (+81)'],['+60','Malaysia (+60)'],['+64','New Zealand (+64)'],['+65','Singapore (+65)'],['+971','United Arab Emirates (+971)'],['+44','United Kingdom (+44)']]
+const categories = [['nic_front','NIC - Front'],['nic_back','NIC - Back'],['passport','Passport'],['photograph','Passport photograph'],['education','Educational certificates'],['transcript','Academic transcripts'],['english_qualification','English language certificates'],['cv','CV'],['financial','Financial documents'],['other','Other supporting documents']]
 
 function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
   const [session, setSession] = useState(null)
@@ -47,7 +47,11 @@ function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
   const [authMode, setAuthMode] = useState('login')
-  const [phoneCountryCode, setPhoneCountryCode] = useState('+94')
+  const [authReady, setAuthReady] = useState(false)
+  const [loadingPortal, setLoadingPortal] = useState(false)
+  const [sectionErrors, setSectionErrors] = useState({})
+  const loadVersion = useRef(0)
+  const accountId = useRef(null)
   const [recoveryMode, setRecoveryMode] = useState(() => window.location.hash.includes('type=recovery'))
   const [view, setView] = useState(defaultView)
   useEffect(() => setView(defaultView), [defaultView])
@@ -56,17 +60,40 @@ function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
   const [form, setForm] = useState({ destination: '', education_level: '', course_interest: '', intake:'', institution:'' })
 
   useEffect(() => {
-    if (!supabase) return
-    supabase.auth.getSession().then(({ data }) => setSession(data.session))
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, value) => setSession(value))
-    return () => listener.subscription.unsubscribe()
+    if (!supabase) { setAuthReady(true); return }
+    let active = true, authEventReceived = false
+    const applySession = value => {
+      if (!active) return
+      const nextId = value?.user?.id || null
+      if (accountId.current !== nextId) { accountId.current = nextId; loadVersion.current++; setProfile(null) }
+      setSession(value); setAuthReady(true)
+    }
+    const { data: listener } = supabase.auth.onAuthStateChange((event, value) => {
+      authEventReceived = true
+      if (event === 'PASSWORD_RECOVERY') setRecoveryMode(true)
+      applySession(value)
+    })
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (!active || authEventReceived) return
+      if (error) setError(authErrorMessage(error))
+      applySession(data?.session || null)
+    }).catch(error => { if (active && !authEventReceived) { setError(authErrorMessage(error)); setAuthReady(true) } })
+    return () => { active = false; loadVersion.current++; listener.subscription.unsubscribe() }
   }, [])
 
   useEffect(() => {
-    setProfile(null); setApplications([]); setDocuments([]); setAgreements([]);setApprovalLetters([]);setStaffProfiles([]);setStaffAgreements([]);setPaymentSchedules([]);setPayments([]);setReceipts([]);setNotifications([])
-    if (session) loadPortal()
+    setProfile(null); setApplications([]); setDocuments([]); setAgreements([]); setApprovalLetters([])
+    setStaffProfiles([]); setStaffAgreements([]); setStaffLetters([]); setPaymentSchedules([])
+    setPayments([]); setReceipts([]); setNotifications([]); setConfiguration(null); setTemplates([])
+    setActivityEvents([]); setAuditEvents([]); setApprovalOfficers([]); setCanApproveApplications(false)
+    setUploadedDocument(null); setSelectedApplication(''); setSectionErrors({}); setPaymentError('')
+    setSelectedTemplate(''); setTemplateDraft({name:'',body:''}); setView(defaultView)
+    if (session?.user?.id) loadPortal()
+    else setLoadingPortal(false)
+    return () => { loadVersion.current++ }
+  // Token refreshes must not clear an unfinished profile or signature.
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session])
+  }, [session?.user?.id, staffMode])
 
   useEffect(() => {
     if(!session)return
@@ -78,103 +105,23 @@ function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
   },[session])
 
   async function loadPortal() {
-    setBusy(true); setError(''); setPaymentError('')
+    if (!session?.user?.id) return
+    const version = ++loadVersion.current, userId = session.user.id
+    setLoadingPortal(true); setError('')
     try {
-      const [{ data: p, error: pe }, { data: a, error: ae }] = await Promise.all([
-        supabase.from('portal_profiles').select('*').eq('id', session.user.id).single(),
-        supabase.from('student_applications').select('*').order('submitted_at', { ascending: false }),
-      ])
-      if (pe) throw pe
-      if (ae) throw ae
-      const signupName = session.user.user_metadata?.full_name
-      if (!p.full_name && signupName) {
-        const { error: nameError } = await supabase.from('portal_profiles').update({ full_name: signupName }).eq('id', session.user.id)
-        if (!nameError) p.full_name = signupName
-      }
-      const phoneMatch = (p.phone || '').match(/^(\+\d{1,4})\s*(.*)$/)
-      if (phoneMatch) {
-        if (phoneCountryCodes.some(([code]) => code === phoneMatch[1])) setPhoneCountryCode(phoneMatch[1])
-        p.phone = phoneMatch[2]
-      }
-      setProfile(p); setApplications(a || [])
-      if(p.role==='legal_reviewer')setView('management')
-      if ((staffMode && !staffRoles.includes(p.role)) || (!staffMode && staffRoles.includes(p.role))) return
-      if (p.role === 'student') {
-        const [{ data: docs, error: de }, { data: notices, error: ne },{data:letters,error:le},{data:agreementsData,error:age}] = await Promise.all([
-          supabase.from('student_documents').select('*').eq('student_id', session.user.id).order('uploaded_at', { ascending: false }),
-          supabase.from('student_notifications').select('*').order('created_at', { ascending: false }),
-          supabase.from('approval_letters').select('*').order('created_at',{ascending:false}),
-          supabase.from('student_agreements').select('*').eq('student_id',session.user.id).order('created_at',{ascending:false}),
-        ])
-        if (age) throw age
-        setAgreements(agreementsData || [])
-        if (de) throw de
-        if (ne) throw ne
-        if (le) throw le
-        const { data: fees, error: feeError } = await supabase.from('student_payment_schedules').select('*,payment_installments(*)').eq('student_id', session.user.id)
-        if (feeError) throw feeError
-        setPaymentSchedules(fees || [])
-        setDocuments(docs || []); setNotifications(notices || []);setApprovalLetters(letters||[]);setAgreements(agreementsData||[])
-      } else {
-        setCanApproveApplications(p.role==='admin')
-        if(p.role==='board'){
-          const {data:officer}=await supabase.from('authorized_approval_officers').select('active,can_approve_applications').eq('user_id',session.user.id).maybeSingle()
-          setCanApproveApplications(Boolean(officer?.active&&officer.can_approve_applications))
-        }
-        const { data: people, error: staffError } = await supabase.from('portal_profiles').select('*')
-        if (staffError) throw staffError
-        setStaffProfiles(people || [])
-        const { data: docs, error: de } = await supabase.from('student_documents').select('*').order('uploaded_at', { ascending: false })
-        if (de) throw de
-        setDocuments(docs || [])
-        const {data:agreementRows,error:agreementError}=await supabase.from('student_agreements').select('*').order('created_at',{ascending:false})
-        if(agreementError)throw agreementError
-        setStaffAgreements(agreementRows||[])
-        const {data:letterRows,error:letterError}=await supabase.from('approval_letters').select('id,application_id,reference_number').order('created_at',{ascending:false})
-        if(letterError)throw letterError
-        setStaffLetters(letterRows||[])
-        const {data:activityRows,error:activityError}=await supabase.from('application_activity').select('*').order('created_at',{ascending:false}).limit(200)
-        if(activityError)throw activityError
-        setActivityEvents(activityRows||[])
-        if(p.role==='admin'){
-          const {data:auditRows,error:auditError}=await supabase.from('portal_audit_log').select('*').order('created_at',{ascending:false}).limit(200)
-          if(auditError)throw auditError
-          setAuditEvents(auditRows||[])
-        }
-        if (['admin', 'board', 'legal_reviewer'].includes(p.role)) {
-          const { data: templateRows, error: te } = await supabase.from('agreement_templates').select('*').order('created_at', { ascending: false })
-          if (te) throw te
-          setTemplates(templateRows || [])
-        }
-        if (p.role === 'admin' || p.role==='legal_reviewer') {
-          const { data: cfg, error: ce } = await supabase.from('trinity_configuration').select('*').eq('id',true).single()
-          if (ce) throw ce
-          setConfiguration(cfg)
-        }
-        if (p.role === 'admin') {
-          const {data:officers,error:oe}=await supabase.from('authorized_approval_officers').select('*')
-          if(oe)throw oe
-          setApprovalOfficers(officers||[])
-          const { data: schedules, error: se } = await supabase.from('student_payment_schedules').select('*,payment_installments(*)')
-          if (se) throw se
-          setPaymentSchedules(schedules||[])
-          if (schedules?.length) setPaymentSchedule({ application_id:schedules[0].application_id,total_fee:String(schedules[0].total_fee),initial_payment:String(schedules[0].initial_payment),balance:String(schedules[0].balance),installments:(schedules[0].payment_installments||[]).map(i=>`${i.label}|${i.amount}|${i.due_at}`).join('\n'),included_services:(schedules[0].included_services||[]).join(', '),excluded_expenses:(schedules[0].excluded_expenses||[]).join(', ') })
-        }
-      }
-      if(p.role!=='legal_reviewer'){
-        const [paymentResult,receiptResult,noticeResult]=await Promise.all([supabase.from('portal_payments').select('*').order('created_at',{ascending:false}),supabase.from('payment_receipts').select('*'),supabase.from('student_notifications').select('*').eq('student_id',session.user.id).order('created_at',{ascending:false})])
-        const paymentFailure = paymentResult.error || receiptResult.error
-        if (paymentFailure) {
-          setPayments([]); setReceipts([])
-          setPaymentError('Payment information is temporarily unavailable. Please contact Trinity support. Your agreements can still be accessed.')
-        } else {
-          setPayments(paymentResult.data||[]); setReceipts(receiptResult.data||[])
-        }
-        if(noticeResult.error)throw noticeResult.error
-        setNotifications(noticeResult.data||[])
-      }
-    } catch (e) { setError(e.message || 'Unable to load your portal right now.') }
-    finally { setBusy(false) }
+      const data = await loadPortalSnapshot(supabase, session.user, staffMode)
+      if (version !== loadVersion.current || accountId.current !== userId) return
+      setProfile(data.profile); setApplications(data.applications); setDocuments(data.documents)
+      setNotifications(data.notifications); setPaymentSchedules(data.schedules); setPayments(data.payments); setReceipts(data.receipts)
+      setSectionErrors(data.errors); setPaymentError(data.errors.payments || data.errors.receipts || data.errors.schedules || '')
+      setStaffProfiles(data.people); setTemplates(data.templates); setConfiguration(data.configuration)
+      setActivityEvents(data.activity); setAuditEvents(data.audit); setApprovalOfficers(data.officers); setCanApproveApplications(data.canApprove)
+      if (data.profile.role === 'student') { setAgreements(data.agreements); setApprovalLetters(data.letters) }
+      else { setStaffAgreements(data.agreements); setStaffLetters(data.letters) }
+      if (data.profile.role === 'legal_reviewer') setView(current => ['management','templates'].includes(current) ? current : 'management')
+    } catch (e) {
+      if (version === loadVersion.current && accountId.current === userId) setError(e.message || 'Unable to load your portal right now.')
+    } finally { if (version === loadVersion.current) setLoadingPortal(false) }
   }
 
   async function signIn(event) {
@@ -195,7 +142,7 @@ function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
       }
       const fullName = [authFields.firstName, authFields.secondName].map(part=>part.trim()).filter(Boolean).join(' ')
       const result = authMode === 'signup'
-        ? await supabase.auth.signUp({ email: authFields.email, password: authFields.password, options: { data: { first_name: authFields.firstName.trim(), second_name: authFields.secondName.trim(), full_name: fullName } } })
+        ? await supabase.auth.signUp({ email: authFields.email.trim(), password: authFields.password, options: { emailRedirectTo: `${window.location.origin}/student-portal`, data: { first_name: authFields.firstName.trim(), last_name: authFields.secondName.trim(), second_name: authFields.secondName.trim(), full_name: fullName } } })
         : await supabase.auth.signInWithPassword({ email: authFields.email, password: authFields.password })
       if (result.error) throw result.error
       if (authMode === 'signup') {
@@ -352,9 +299,9 @@ function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
   }
 
   async function openPrivateFile(path, bucket = 'student-private-documents') {
-    const { data, error: e } = await supabase.storage.from(bucket).createSignedUrl(path, 60)
-    if (e) { setError(e.message); return }
-    window.open(data.signedUrl, '_blank', 'noopener,noreferrer')
+    setError('')
+    try { await downloadPrivateFile(bucket, path) }
+    catch (error) { setError(error.message || 'Unable to download this document.') }
   }
 
   async function generateOfficialDocument(app,kind,templateId){
@@ -372,6 +319,7 @@ function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
   return <main className="portal-page">
     {(session || !isSupabaseConfigured) && <header className="portal-topbar"><Link to="/" className="portal-brand"><img src="/trinity-logo.jpeg" alt="Trinity International"/><span>Student Services Portal</span></Link><Link to="/" className="portal-back"><ArrowLeft size={16}/> Main website</Link></header>}
     {!isSupabaseConfigured ? <section className="portal-card portal-config"><CircleAlert/><h1>Portal setup needed</h1><p>Add the Supabase project URL and publishable key to <code>.env.local</code>, apply the database scripts in the order listed in <code>supabase/functions/README.md</code>, and deploy the Edge Functions described in <code>supabase/functions/README.md</code>.</p></section>
+      : !authReady ? <section className="portal-card portal-config" role="status"><h1>Checking your session�</h1></section>
       : recoveryMode ? <section className="portal-auth"><div className="portal-auth-visual"><Link to="/" className="portal-auth-logo"><img src="/trinity-logo.jpeg" alt="Trinity International"/><span>TRINITY<small>INTERNATIONAL</small></span></Link><div className="portal-auth-message"><span className="portal-auth-kicker">SECURE ACCOUNT ACCESS</span><h1>Choose a new password.</h1><p>Update your password to return to the Trinity student portal.</p></div></div><div className="portal-auth-panel"><form className="portal-card portal-auth-card" onSubmit={signIn}><span className="portal-eyebrow">PASSWORD RESET</span><h2>Set a new password</h2><p className="portal-muted">Choose a password with at least 8 characters.</p><label>New password<input required type="password" minLength="8" autoComplete="new-password" placeholder="Enter a new password" value={authFields.password} onChange={e=>setAuthFields({...authFields,password:e.target.value})}/></label>{error&&<p className="portal-error">{error}</p>}{notice&&<p className="portal-notice">{notice}</p>}<button className="portal-primary" disabled={busy||!session}>{!session?'Checking reset link…':'Save new password'}</button></form></div></section>
       : !session ? <section className="portal-auth">
         <div className="portal-auth-visual">
@@ -380,10 +328,10 @@ function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
           <div className="portal-auth-points"><span><ShieldCheck size={16}/> Secure document review</span><span><Plane size={16}/> Guided application journey</span></div>
         </div>
         <div className="portal-auth-panel"><Link to="/" className="portal-auth-home"><ArrowLeft size={15}/> Main website</Link>
-          <form className="portal-card portal-auth-card" onSubmit={signIn}><span className="portal-eyebrow">{staffMode ? 'TRINITY STAFF ACCESS' : 'STUDENT SERVICES PORTAL'}</span><h2>{authMode === 'signup' ? 'Create your account' : authMode==='forgot' ? 'Reset your password' : 'Student Login'}</h2><p className="portal-muted">{authMode === 'signup' ? 'Create an account to start your study application.' : authMode==='forgot' ? 'Enter your account email and we will send a reset link.' : 'Welcome back. Sign in to continue.'}</p>
+          <form className="portal-card portal-auth-card" onSubmit={signIn}><span className="portal-eyebrow">{staffMode ? 'TRINITY STAFF ACCESS' : 'STUDENT SERVICES PORTAL'}</span><h2>{authMode === 'signup' ? 'Create your account' : authMode==='forgot' ? 'Reset your password' : staffMode ? 'Staff Login' : 'Student Login'}</h2><p className="portal-muted">{authMode === 'signup' ? 'Create an account to start your study application.' : authMode==='forgot' ? 'Enter your account email and we will send a reset link.' : 'Welcome back. Sign in to continue.'}</p>
             {authMode === 'signup' && <><label>First name<input required autoComplete="given-name" value={authFields.firstName} onChange={e => setAuthFields({...authFields,firstName:e.target.value})}/></label><label>Second name<input required autoComplete="family-name" value={authFields.secondName} onChange={e => setAuthFields({...authFields,secondName:e.target.value})}/></label></>}
             <label>Email address<input required type="email" autoComplete="email" placeholder="you@example.com" value={authFields.email} onChange={e => setAuthFields({...authFields,email:e.target.value})}/></label>
-            {authMode !== 'forgot' && <label>Password<input required type="password" minLength="8" autoComplete={authMode === 'signup' ? 'new-password' : 'current-password'} placeholder="Enter your password" value={authFields.password} onChange={e => setAuthFields({...authFields,password:e.target.value})}/></label>}
+            {authMode !== 'forgot' && <label>Password<input required type="password" minLength={authMode === 'signup' ? 8 : undefined} autoComplete={authMode === 'signup' ? 'new-password' : 'current-password'} placeholder="Enter your password" value={authFields.password} onChange={e => setAuthFields({...authFields,password:e.target.value})}/></label>}
             {error && <p className="portal-error">{error}</p>}{notice && <p className="portal-notice">{notice}</p>}
             <button className="portal-primary" disabled={busy}>{busy ? 'Please wait…' : authMode === 'signup' ? 'Create student account' : authMode==='forgot' ? 'Send reset link' : 'Sign in securely'}</button>
             {!staffMode && authMode==='login' && <button type="button" className="portal-text-button portal-forgot-button" onClick={()=>{setAuthMode('forgot');setError('');setNotice('')}}>Forgot password?</button>}
@@ -392,18 +340,20 @@ function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
           </form><p className="portal-auth-footer">By continuing, you access the secure Trinity International student platform.</p><Link className="portal-preview-link" to="/student-portal/preview">Preview the portal without signing in</Link>
         </div>
       </section>
-      : !profile ? <section className="portal-card portal-config"><CircleAlert/><h1>{busy?'Loading your secure account':'Portal data setup needed'}</h1><p>{error||'Your portal account profile could not be loaded. Confirm that the database migrations and profile trigger are installed.'}</p><button className="portal-outline" onClick={() => supabase.auth.signOut()}>Sign out</button></section>
+      : !profile ? <section className="portal-card portal-config"><CircleAlert/><h1>{loadingPortal?'Loading your secure account':'Unable to load your account'}</h1><p>{loadingPortal?'Please wait while your account loads.':error||'Your portal profile could not be loaded. Contact Trinity support.'}</p><button className="portal-outline" disabled={loadingPortal} onClick={loadPortal}>Retry</button><button className="portal-outline" onClick={() => supabase.auth.signOut()}>Sign out</button></section>
       : !isCorrectPortal ? <section className="portal-card portal-config"><CircleAlert/><h1>{staffMode ? 'Staff access required' : 'Student account required'}</h1><p>This account does not have access to this portal. Ask a Trinity administrator to assign the correct access role if you are a staff member.</p><button className="portal-outline" onClick={() => supabase.auth.signOut()}>Sign out and switch account</button></section>
       : <div className="portal-layout"><aside className="portal-sidebar"><div className="portal-user"><div className="portal-avatar"><UserRound/></div><strong>{profile.full_name || session.user.email}</strong><span>{staffUser ? `${profile.role} workspace` : `Student ID ${profile.student_number}`}</span></div><nav>{navigation.map(([key,label,Icon])=><button className={view===key?'active':''} key={key} onClick={()=>setView(key)}><Icon size={17}/>{label}<ChevronRight size={15}/></button>)}</nav><button className="portal-signout" onClick={()=>supabase.auth.signOut()}><LogOut size={16}/> Sign out</button></aside>
         <section className="portal-content"><div className="portal-page-heading"><div><span className="portal-eyebrow">{staffUser ? 'TRINITY INTERNATIONAL · STAFF' : 'TRINITY INTERNATIONAL · STUDENT'}</span><h1>{staffUser ? profile.role==='legal_reviewer'?'Legal review workspace':'Application workspace' : `Hello${profile.full_name ? `, ${profile.full_name.split(' ')[0]}` : ''}`}</h1><p>{staffUser ? profile.role==='legal_reviewer'?'Review draft agreement templates and proposed refund policy.':'Review student applications and document verification.' : 'Your application journey, documents and updates in one place.'}</p></div><span className="portal-secure"><ShieldCheck size={16}/> Secure portal</span></div>
           {error && <div className="portal-flash error">{error}</div>}{notice && <div className="portal-flash success">{notice}<button onClick={()=>setNotice('')}>Dismiss</button></div>}{busy && <div className="portal-loading">Updating your secure workspace…</div>}
-          {!staffUser && view==='overview' && <><div className="portal-stat-grid"><article><span>Application</span><strong>{applications[0]?.status.replaceAll('_',' ')||'Not started'}</strong></article><article><span>Documents</span><strong>{documents.filter(d=>d.status==='verified').length} approved</strong></article><article><span>Agreement</span><strong>{agreements.find(a=>a.status!=='voided')?.status.replaceAll('_',' ')||'Not generated'}</strong></article><article><span>Payments</span><strong>{paymentError?'Unavailable':`${payments.filter(p=>p.status==='successful').length} successful`}</strong></article><article><span>Messages</span><strong>{notifications.filter(n=>!n.read_at).length} unread</strong></article></div><WorkflowProgress profile={profile} application={applications[0]} documents={documents} agreements={agreements} payments={payments}/><div className="portal-card"><h2>Your next steps</h2><div className="portal-action-row"><button className="portal-primary" onClick={()=>setView('profile')}>Complete profile</button><button className="portal-outline" onClick={()=>setView('application')}>My application</button><button className="portal-outline" onClick={()=>setView('documents')}>Upload documents</button><button className="portal-outline" onClick={()=>setView('agreements')}>Review agreement</button></div></div></>}
+          <div className="portal-action-row"><button className="portal-outline compact" disabled={loadingPortal || busy} onClick={loadPortal}>{loadingPortal?'Refreshing�':'Refresh portal'}</button></div>
+          {Object.keys(sectionErrors).length>0 && <div className="portal-error" role="alert"><strong>Some information could not be loaded.</strong>{Object.entries(sectionErrors).map(([key,message])=><p key={key}>{message}</p>)}</div>}
+          {!staffUser && view==='overview' && <><div className="portal-stat-grid"><article><span>Application</span><strong>{applications[0]?.status?.replaceAll('_',' ')||'Not started'}</strong></article><article><span>Documents</span><strong>{documents.filter(d=>d.status==='verified').length} approved</strong></article><article><span>Agreement</span><strong>{agreements.find(a=>a.status!=='voided')?.status.replaceAll('_',' ')||'Not generated'}</strong></article><article><span>Payments</span><strong>{paymentError?'Unavailable':`${payments.filter(p=>p.status==='successful').length} successful`}</strong></article><article><span>Messages</span><strong>{notifications.filter(n=>!n.read_at).length} unread</strong></article></div><WorkflowProgress profile={profile} application={applications[0]} documents={documents} agreements={agreements} payments={payments}/><div className="portal-card"><h2>Your next steps</h2><div className="portal-action-row"><button className="portal-primary" onClick={()=>setView('profile')}>Complete profile</button><button className="portal-outline" onClick={()=>setView('application')}>My application</button><button className="portal-outline" onClick={()=>setView('documents')}>Upload documents</button><button className="portal-outline" onClick={()=>setView('agreements')}>Review agreement</button></div></div></>}
           {!staffUser && view==='application' && <div className="portal-card portal-form-card"><h2>{applications.length?'Add a study application':'Your study application'}</h2><p>Share your study preferences to create your application record.</p><form onSubmit={saveApplication}><label>Preferred destination<select required value={form.destination} onChange={e=>setForm({...form,destination:e.target.value})}><option value="">Choose a destination</option>{['Australia','Canada','Ireland','Malaysia','New Zealand','Singapore','United Kingdom','United States'].map(x=><option key={x}>{x}</option>)}</select></label><label>Highest education completed<input required value={form.education_level} onChange={e=>setForm({...form,education_level:e.target.value})} placeholder="For example, Advanced Level"/></label><label>Course or subject of interest<input required value={form.course_interest} onChange={e=>setForm({...form,course_interest:e.target.value})} placeholder="For example, Business Management"/></label><label>Intake<input required value={form.intake} onChange={e=>setForm({...form,intake:e.target.value})} placeholder="For example, September 2027"/></label><label>University / institution<input value={form.institution} onChange={e=>setForm({...form,institution:e.target.value})}/></label><button className="portal-primary" disabled={busy}>Save application <ChevronRight size={16}/></button></form></div>}
           {!staffUser && view==='documents' && <><div className="portal-card portal-form-card"><h2>Upload a document</h2><label>Application<select value={selectedApplication||applications[0]?.id||''} onChange={e=>setSelectedApplication(e.target.value)}>{applications.map(a=><option value={a.id} key={a.id}>{a.destination} ? {a.course_interest}</option>)}</select></label><div className="portal-document-checklist">{categories.map(([key,label])=>{const doc=documents.find(d=>d.application_id===(selectedApplication||applications[0]?.id)&&d.category===key&&d.status!=='replaced');return <span className="portal-tag" key={key}>{label}: {doc?({pending:'Uploaded',verified:'Approved',rejected:'Rejected',correction_requested:'Resubmission required'}[doc.status]||doc.status):'Not uploaded'}</span>})}</div><p>Accepted formats: PDF, JPG, PNG. Maximum 10 MB per document.</p><form onSubmit={uploadDocument}><label>Document type<select name="category">{categories.map(([key,label])=><option value={key} key={key}>{label}</option>)}</select></label><label className="portal-file"><Upload size={18}/><span>Choose a file<input name="file" required type="file" accept="application/pdf,image/jpeg,image/png"/></span></label><button className="portal-primary" disabled={busy||!applications.length}>Upload securely <Upload size={16}/></button></form></div><ExtractedDetails documents={documents} uploadedDocument={uploadedDocument} profile={profile} onSaved={loadPortal}/><div className="portal-card"><h2>Your documents</h2>{documents.length?documents.map(doc=><DocumentRow key={doc.id} doc={doc} onOpen={()=>openPrivateFile(doc.storage_path)}/>):<p className="portal-muted">Your uploaded documents will appear here.</p>}</div><div className="portal-card"><h2>Agreements and letters</h2><button className="portal-outline" onClick={()=>setView('agreements')}>Review agreements</button><button className="portal-outline" onClick={()=>setView('letters')}>Approval letters</button></div></>}
           {!staffUser && view==='profile' && <ProfileForm key={profile.id} profile={{...profile,phone:`${phoneCountryCode} ${profile.phone||''}`}} email={session.user.email} onSaved={loadPortal}/>}
           {!staffUser && view==='status' && <WorkflowProgress profile={profile} application={applications.find(a=>a.id===selectedApplication)||applications[0]} documents={documents} agreements={agreements} payments={payments}/>}
           {!staffUser && view==='letters' && <div className="portal-card"><h2>Approval letters</h2><p className="portal-muted">Internal Trinity approval letters are made available here after authorized review.</p>{approvalLetters.length?approvalLetters.map(letter=><article className="portal-document" key={letter.id}><FileText/><span className="portal-doc-info"><strong>Internal approval letter</strong><small>{letter.reference_number} · {new Date(letter.approved_at).toLocaleDateString()}</small></span><button className="portal-outline compact" onClick={()=>openPrivateFile(letter.storage_path,'student-private-letters')}>Download PDF</button></article>):<p className="portal-empty-note">No approval letters have been released yet.</p>}</div>}
-          {!staffUser && view==='agreements' && <AgreementWorkspace agreements={agreements} profile={profile} onChanged={loadPortal}/>}
+          {!staffUser && view==='agreements' && !loadingPortal && !sectionErrors.agreements && <AgreementWorkspace agreements={agreements} profile={profile} onChanged={loadPortal}/>}
           {paymentError && ['overview','payments'].includes(view) && <p className="portal-error" role="alert">{paymentError}</p>}
           {!staffUser && view==='payments' && !paymentError && <Payments schedules={paymentSchedules} agreements={agreements} payments={payments} receipts={receipts} profile={profile}/>}
           {!staffUser && view==='support' && <div className="portal-card portal-empty"><MessageCircle/><h2>Need support?</h2><p>Contact Trinity about your application, documents, or portal access.</p><Link className="portal-primary portal-link-button" to="/contact">Contact Trinity <ChevronRight size={16}/></Link></div>}

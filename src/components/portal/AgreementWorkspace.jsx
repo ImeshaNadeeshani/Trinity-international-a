@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { FileText, PenLine, ShieldCheck, LockKeyhole } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { invokePortal } from '../../lib/portalFunctions'
+import { downloadPrivateFile } from '../../lib/privateFiles'
 
 import { agreementLabel } from '../../lib/portalLabels'
 
@@ -27,14 +28,7 @@ export default function AgreementWorkspace({ agreements, profile, onChanged, man
     try {
       const path = agreement.completed_pdf_path || agreement.student_signed_pdf_path || agreement.private_pdf_path
       if (!path) throw new Error('The agreement PDF is not available yet.')
-      const { data, error } = await supabase.storage.from('student-private-agreements').download(path)
-      if (error) throw error
-      const objectUrl = URL.createObjectURL(data)
-      const link = document.createElement('a')
-      link.href = objectUrl
-      link.download = `${(agreement.reference_number || 'student-agreement').replace(/[^a-zA-Z0-9_-]/g, '_')}.pdf`
-      document.body.appendChild(link); link.click(); link.remove()
-      setTimeout(() => URL.revokeObjectURL(objectUrl), 60000)
+      await downloadPrivateFile('student-private-agreements', path, `${agreement.reference_number || 'student-agreement'}.pdf`)
     } catch (error) { setError(error.message) }
     finally { setBusy(false) }
   }
@@ -55,7 +49,11 @@ export default function AgreementWorkspace({ agreements, profile, onChanged, man
   }
   function begin(event) {
     if (busy) return
+    if (method === 'uploaded') clear()
     event.currentTarget.setPointerCapture(event.pointerId); previous.current = point(event); setDrawing(true); setMethod('drawn'); setConsent(false)
+    const ctx = canvas.current.getContext('2d'), position = previous.current
+    ctx.fillStyle = '#102949'; ctx.beginPath(); ctx.arc(position.x, position.y, 1.5, 0, Math.PI * 2); ctx.fill()
+    setSignature(canvas.current.toDataURL('image/png'))
   }
   function move(event) {
     if (!drawing || !previous.current) return

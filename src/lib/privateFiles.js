@@ -9,7 +9,7 @@ export async function downloadPrivateFile(bucket, path, filename) {
   const url = URL.createObjectURL(data)
   const link = document.createElement('a')
   link.href = url
-  link.download = (filename || path.split('/').pop() || 'document').replace(/[<>:"/\\|?*\x00-\x1f]/g, '_')
+  link.download = [...(filename || path.split('/').pop() || 'document')].map(character => character.charCodeAt(0) < 32 || /[<>:"/\\|?*]/.test(character) ? '_' : character).join('')
   document.body.appendChild(link)
   link.click()
   link.remove()

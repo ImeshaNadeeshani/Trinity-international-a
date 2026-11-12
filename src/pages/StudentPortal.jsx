@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, ChevronRight, CircleAlert, FileText, LogOut, ShieldCheck, Upload, UserRound, Bell, LockKeyhole, LayoutDashboard, ClipboardList, FolderOpen, CreditCard, MessageCircle, Settings, Plane } from 'lucide-react'
-import { isSupabaseConfigured, supabase } from '../lib/supabase'
+import { supabase } from '../lib/supabase'
 import '../styles/portal.css'
 import { ExtractedDetails } from '../components/DocumentAutomation'
 import { invokePortal } from '../lib/portalFunctions'
@@ -130,6 +130,11 @@ function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
 
   async function signIn(event) {
     event.preventDefault(); setBusy(true); setError(''); setNotice('')
+    if (!supabase) {
+      setError('Account access is temporarily unavailable. Please try again later or contact Trinity support. You can still preview the portal below.')
+      setBusy(false)
+      return
+    }
     try {
       if (authMode === 'forgot' && !recoveryMode) {
         const { error: resetError } = await supabase.auth.resetPasswordForEmail(authFields.email.trim(), { redirectTo: `${window.location.origin}${staffMode ? '/staff-portal' : '/student-portal'}` })
@@ -321,9 +326,8 @@ function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
   const navigation=staffUser?staffNavigation:[['overview','Dashboard',LayoutDashboard],['profile','My Profile',UserRound],['application','My Application',ClipboardList],['documents','Upload Documents',FolderOpen],['status','Application Status',ShieldCheck],['letters','Approval Letters',FileText],['agreements','Agreements',FileText],['payments','Payments',CreditCard],['notifications','Notifications',Bell],['support','Support',MessageCircle]]
 
   return <main className="portal-page">
-    {(session || !isSupabaseConfigured) && <header className="portal-topbar"><Link to="/" className="portal-brand"><img src="/trinity-logo.jpeg" alt="Trinity International"/><span>Student Services Portal</span></Link><Link to="/" className="portal-back"><ArrowLeft size={16}/> Main website</Link></header>}
-    {!isSupabaseConfigured ? <section className="portal-card portal-config"><CircleAlert/><h1>Portal setup needed</h1><p>Add the Supabase project URL and publishable key to <code>.env.local</code>, apply the database scripts in the order listed in <code>supabase/functions/README.md</code>, and deploy the Edge Functions described in <code>supabase/functions/README.md</code>.</p></section>
-      : !authReady ? <section className="portal-card portal-config" role="status"><h1>Checking your session...</h1></section>
+    {session && <header className="portal-topbar"><Link to="/" className="portal-brand"><img src="/trinity-logo.jpeg" alt="Trinity International"/><span>Student Services Portal</span></Link><Link to="/" className="portal-back"><ArrowLeft size={16}/> Main website</Link></header>}
+    {!authReady ? <section className="portal-card portal-config" role="status"><h1>Checking your session...</h1></section>
       : recoveryMode ? <section className="portal-auth"><div className="portal-auth-visual"><Link to="/" className="portal-auth-logo"><img src="/trinity-logo.jpeg" alt="Trinity International"/><span>TRINITY<small>INTERNATIONAL</small></span></Link><div className="portal-auth-message"><span className="portal-auth-kicker">SECURE ACCOUNT ACCESS</span><h1>Choose a new password.</h1><p>Update your password to return to the Trinity student portal.</p></div></div><div className="portal-auth-panel"><form className="portal-card portal-auth-card" onSubmit={signIn}><span className="portal-eyebrow">PASSWORD RESET</span><h2>Set a new password</h2><p className="portal-muted">Choose a password with at least 8 characters.</p><label>New password<input required type="password" minLength="8" autoComplete="new-password" placeholder="Enter a new password" value={authFields.password} onChange={e=>setAuthFields({...authFields,password:e.target.value})}/></label>{error&&<p className="portal-error">{error}</p>}{notice&&<p className="portal-notice">{notice}</p>}<button className="portal-primary" disabled={busy||!session}>{!session?'Reset session unavailable':'Save new password'}</button>{!session && <><p className="portal-muted">This reset link may have expired. Request a new password reset email.</p><button type="button" className="portal-text-button" onClick={()=>{setRecoveryMode(false);setAuthMode('forgot');setAuthFields({...authFields,password:''});window.history.replaceState({},document.title,window.location.pathname)}}>Request a new reset link</button></>}</form></div></section>
       : !session ? <section className="portal-auth">
         <div className="portal-auth-visual">

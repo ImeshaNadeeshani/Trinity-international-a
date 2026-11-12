@@ -13,19 +13,19 @@ import {
 import SectionTitle from '../components/SectionTitle'
 import aboutStudents from '../assets/images/about-student-collage-v2.png'
 import aboutStudentsMobile from '../assets/images/about-mobile-v2.png'
-import stefanShanmugarajah from '../assets/images/stefan-shanmugarajah.png'
-import dehamiDirector from '../assets/images/dehami-director.png'
+import dehamiDirector from '../assets/images/dehami-director-new.png'
 import pasterHeshan from '../assets/images/paster-heshan-rubera.png'
 import ananthiVythilingam from '../assets/images/ananthi-vythilingam.jpeg'
 import antoinetteMichelle from '../assets/images/antoinette-michelle.jpeg'
 import imeshaNadeeshani from '../assets/images/imesha-nadeeshani-white-bg.png'
-import chathurikaSewwandi from '../assets/images/chathurika-sewwandi.png'
 import richieWeerakoon from '../assets/images/richie-weerakoon-new.jpeg'
 import manishaRatnayake from '../assets/images/manisha-ratnayake.png'
 import nishanRubera from '../assets/images/nishan-rubera.png'
 import shenalJerusha from '../assets/images/shenal-jerusha.png'
 import chamuthSenura from '../assets/images/chamuth-senura.png'
 import sepalikaSewwandi from '../assets/images/sepalika-sewwandi.png'
+import shemaRodrigo from '../assets/images/shema-rodrigo.jpeg'
+import thisaraShyamal from '../assets/images/thisara-shyamal.jpeg'
 import officeReception from '../assets/images/trinity-office-reception.png'
 import '../styles/about.css'
 
@@ -50,11 +50,11 @@ const leaders = {
   ],
   team: [
     { name: 'Ananthi Vythilingam', displayName: 'Ananthi Vythilingam', role: 'Head of Projects', image: ananthiVythilingam },
-    { name: 'Stefan Shanmugarajah', displayName: 'Stefan Shanmugarajah', role: 'Asst. Manager', image: stefanShanmugarajah },
     { name: 'Antoinette Yvonne Michelle', displayName: 'Antoinette Yvonne Michelle', role: 'Executive', image: antoinetteMichelle },
-    { name: 'Chathurika Sewwandi', displayName: 'Chathurika Sewwandi', role: 'Senior Executive – Administration & Operations', image: chathurikaSewwandi },
-    { name: 'Richie Weerakoon', displayName: 'Richie Weerakoon', role: 'Assistant Manager – Human Resources', image: richieWeerakoon },
     { name: 'Nishan Rubera', displayName: 'Nishan Rubera', role: 'Manager', image: nishanRubera },
+    { name: 'Richie Weerakoon', displayName: 'Richie Weerakoon', role: 'Assistant Manager – Human Resources', image: richieWeerakoon },
+    { name: 'Shema Rodrigo', displayName: 'Shema Rodrigo', role: 'Junior Executive', image: shemaRodrigo },
+    { name: 'Thisara Shyamal', displayName: 'Thisara Shyamal', role: 'Junior Executive', image: thisaraShyamal },
     { name: 'Shenal Jerusha', displayName: 'Shenal Jerusha', role: 'Digital Marketing & Content Specialist', image: shenalJerusha },
     { name: 'Chamuth Senura', displayName: 'Chamuth Senura', role: 'Software Developer', image: chamuthSenura },
     { name: 'Imesha Nadeeshani', displayName: 'Imesha Nadeeshani', role: 'Software Developer & Data Analyst', image: imeshaNadeeshani },

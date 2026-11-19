@@ -34,14 +34,15 @@ export function wrapPdfLine(value, font, size, width) {
   return lines.length ? lines : ['']
 }
 
-export async function renderAgreementPdf(pdfLib, text, reference) {
+export async function renderAgreementPdf(pdfLib, text, reference, logoBase64 = '') {
   const { PDFDocument, StandardFonts, rgb } = pdfLib
   const pdf = await PDFDocument.create()
   const font = await pdf.embedFont(StandardFonts.Helvetica)
   const bold = await pdf.embedFont(StandardFonts.HelveticaBold)
+  const logo = logoBase64 ? await pdf.embedJpg(Uint8Array.from(atob(logoBase64), character => character.charCodeAt(0))) : null
   const ink = rgb(0.08, 0.15, 0.22)
   let page, y
-  const addPage = () => { page = pdf.addPage([595.28, 841.89]); y = 779 }
+  const addPage = () => { page = pdf.addPage([595.28, 841.89]); y = logo ? 755 : 779 }
   addPage()
   const normalized = normalizePdfText(text)
   // Fail clearly rather than silently dropping characters from names or clauses.
@@ -63,8 +64,9 @@ export async function renderAgreementPdf(pdfLib, text, reference) {
   }
   const pages = pdf.getPages()
   pages.forEach((sheet, index) => {
-    sheet.drawText('TRINITY INTERNATIONAL | STUDENT SERVICE AGREEMENT', { x: 48, y: 810, size: 8, font: bold, color: ink })
-    sheet.drawLine({ start: { x: 48, y: 798 }, end: { x: 547, y: 798 }, thickness: 0.5, color: ink })
+    if (logo) sheet.drawImage(logo, { x: 48, y: 780, width: 58, height: 58 })
+    sheet.drawText('TRINITY INTERNATIONAL | STUDENT SERVICE AGREEMENT', { x: logo ? 118 : 48, y: 810, size: 8, font: bold, color: ink })
+    sheet.drawLine({ start: { x: logo ? 118 : 48, y: 798 }, end: { x: 547, y: 798 }, thickness: 0.5, color: ink })
     sheet.drawText(normalizePdfText(reference), { x: 48, y: 35, size: 8, font })
     sheet.drawText(`Page ${index + 1} of ${pages.length}`, { x: 480, y: 35, size: 8, font })
   })

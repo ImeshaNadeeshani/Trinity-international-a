@@ -17,8 +17,10 @@ const FindMyUni = lazy(() => import('./pages/FindMyUni'))
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
 const TermsAndConditions = lazy(() => import('./pages/TermsAndConditions'))
 const EligibilityCheck = lazy(() => import('./pages/EligibilityCheck'))
+const ManagementPortalPreview = lazy(() => import('./pages/ManagementPortalPreview'))
 const StudentPortal = lazy(() => import('./pages/StudentPortal'))
 const StudentPortalPreview = lazy(() => import('./pages/StudentPortalPreview'))
+const StudentJourneyDesign = lazy(() => import('./pages/StudentJourneyDesign'))
 const DevelopmentPlan = lazy(() => import('./pages/DevelopmentPlan'))
 
 function App() {
@@ -28,7 +30,7 @@ function App() {
 function AppShell() {
   const [consultationOpen, setConsultationOpen] = useState(false)
   const location = useLocation()
-  const isPortal = location.pathname.startsWith('/student-portal') || location.pathname === '/staff-portal' || location.pathname === '/document-verification'
+  const isPortal = location.pathname.startsWith('/student-portal') || location.pathname.startsWith('/staff-portal') || location.pathname === '/document-verification'
 
   return (
       <div className="app">
@@ -46,10 +48,21 @@ function AppShell() {
           <Route path="/findmyuni" element={<FindMyUni />} />
           <Route path="/eligibility-check" element={<EligibilityCheck />} />
           <Route path="/student-portal" element={<StudentPortal />} />
+          <Route path="/student-portal/design" element={<Navigate to="/student-portal/design/login" replace />} />
+          <Route path="/student-portal/design/:screen" element={<StudentJourneyDesign />} />
+          <Route path="/student-portal/documents" element={<StudentPortal defaultView="documents" />} />
+          <Route path="/student-portal/application" element={<StudentPortal defaultView="application" />} />
+          <Route path="/student-portal/profile" element={<StudentPortal defaultView="profile" />} />
+          <Route path="/student-portal/letters" element={<StudentPortal defaultView="letters" />} />
           <Route path="/student-portal/agreements" element={<StudentPortal defaultView="agreements" />} />
           <Route path="/student-portal/preview" element={<StudentPortalPreview />} />
+          <Route path="/student-portal/preview/agreements" element={<StudentPortalPreview defaultView="agreements" />} />
+          <Route path="/student-portal/preview/documents" element={<StudentPortalPreview defaultView="documents" />} />
+          <Route path="/student-portal/preview/application" element={<StudentPortalPreview defaultView="application" />} />
+          <Route path="/student-portal/preview/profile" element={<StudentPortalPreview defaultView="profile" />} />
           <Route path="/document-verification" element={<StudentPortal defaultView="documents" />} />
           <Route path="/development-plan" element={<DevelopmentPlan />} />
+          <Route path="/staff-portal/preview" element={<ManagementPortalPreview />} />
           <Route path="/staff-portal" element={<StudentPortal staffMode />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsAndConditions />} />

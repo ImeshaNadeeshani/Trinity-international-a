@@ -8,7 +8,8 @@ export async function authenticated(request: Request, action: string, limit = 30
   if (error || !user || !user.email_confirmed_at) throw new Error('Sign in with a verified email address.')
   const db = dbClient()
   const { data: allowed, error: limitError } = await db.rpc('portal_consume_limit', { actor: user.id, action, maximum: limit })
-  if (limitError || !allowed) throw new Error('Request limit reached or portal setup is incomplete. Try again later.')
+  if (limitError) throw new Error(`Portal rate-limit setup failed (${limitError.code || 'database error'}). Ask the administrator to apply repair_portal_rate_limits.sql and check Edge Function logs.`)
+  if (!allowed) throw new Error('Hourly request limit reached. Try again after the next hour begins.')
   const { data: profile, error: profileError } = await db.from('portal_profiles').select('*').eq('id', user.id).single()
   if (profileError) throw new Error('Profile unavailable.')
   return { user, profile, db, client }

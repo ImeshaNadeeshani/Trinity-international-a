@@ -2,6 +2,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2'
 import * as pdfLib from 'npm:pdf-lib@1.17.1'
 import { fillAgreementTemplate, renderAgreementPdf } from '../_shared/agreement-text.mjs'
 import { authenticated } from '../_shared/portal.ts'
+import { trinityLogoBase64 } from '../_shared/trinity-logo.ts'
 
 const cors={ 'Access-Control-Allow-Origin':Deno.env.get('PORTAL_ORIGIN')??'*','Access-Control-Allow-Headers':'authorization, x-client-info, apikey, content-type','Access-Control-Allow-Methods':'POST, OPTIONS' }
 const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...cors,'Content-Type':'application/json'}})
@@ -22,7 +23,7 @@ Deno.serve(async(request)=>{
   let templateQuery=db.from('agreement_templates').select('id,name,body,version').eq('approval_status','approved').eq('active',true)
   if(template_id)templateQuery=templateQuery.eq('id',template_id)
   const [{data:old},{data:templates},{data:schedule},{data:profile},{data:config},{data:docs}]=await Promise.all([
-    db.from('student_agreements').select('id,reference_number').eq('application_id',application_id).neq('status','voided').maybeSingle(),
+    db.from('student_agreements').select('id,reference_number').eq('application_id',application_id).neq('status','voided').eq('is_sample',false).maybeSingle(),
     templateQuery.order('approved_at',{ascending:false}).limit(1),
     db.from('student_payment_schedules').select('*,payment_installments(*)').eq('application_id',application_id).single(),
     db.from('portal_profiles').select('*').eq('id',app.student_id).single(),
@@ -39,7 +40,7 @@ Deno.serve(async(request)=>{
   if(!profile.full_name||!profile.identification_number||!profile.residential_address)return json({error:'Student name, identification number, and residential address must be completed before agreement generation.'},409)
   if(!docs?.length||docs.some((d)=>d.status!=='verified'||d.scan_status!=='clean'))return json({error:'All current student documents must be scanned and verified before agreement generation.'},409)
   const {data:ready,error:readyError}=await db.rpc('portal_application_ready',{app_id:application_id})
-  if(readyError||!ready)return json({error:'Approve all mandatory documents, confirm NIC details and complete the profile before generating an agreement.'},409)
+  if(readyError||!ready)return json({error:'Approve all mandatory documents and complete the student profile before generating an agreement.'},409)
   const {data:ref,error:refError}=await db.rpc('portal_next_agreement_reference')
   if(refError)return json({error:'Unable to allocate an agreement reference.'},500)
   const scheduleText=[`Total consultancy fee: ${schedule.currency} ${Number(schedule.total_fee).toFixed(2)}`,`Initial payment: ${schedule.currency} ${Number(schedule.initial_payment).toFixed(2)}`,`Remaining balance: ${schedule.currency} ${Number(schedule.balance).toFixed(2)}`,...(schedule.payment_installments||[]).map((i)=>`${i.label}: ${schedule.currency} ${Number(i.amount).toFixed(2)} due ${i.due_at}`),`Accepted payment methods: ${(schedule.payment_methods||[]).join(', ')||'To be agreed'}`].join('\n')
@@ -65,7 +66,7 @@ Deno.serve(async(request)=>{
   try {
     const body=template.body.replaceAll('Date: [Automatically Generated]', 'Date: Pending signature')
     const agreementText=fillAgreementTemplate(body,replacements)
-    bytes=await renderAgreementPdf(pdfLib,agreementText,ref)
+    bytes=await renderAgreementPdf(pdfLib,agreementText,ref,trinityLogoBase64)
   } catch(error) { return json({error:error instanceof Error?error.message:'Unable to render agreement.'},409) }
   const path=`${app.student_id}/${app.id}/${ref}-unsigned.pdf`
   const {error:up}=await db.storage.from('student-private-agreements').upload(path,bytes,{contentType:'application/pdf',upsert:false})

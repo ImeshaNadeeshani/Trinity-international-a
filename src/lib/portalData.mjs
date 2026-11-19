@@ -10,6 +10,7 @@ export function portalLoadMessage(section, error) {
 // A failed optional feature must never turn successful account data into an empty list.
 export async function loadPortalSnapshot(client, user, staffMode) {
   const { data: profile, error } = await client.from('portal_profiles').select('*').eq('id', user.id).single()
+  if (error?.code === 'PGRST116') throw new Error('Signed in, but your portal profile is missing or not readable. Ask the administrator to check portal_profiles for your account UID and its read permissions.')
   if (error) throw new Error(portalLoadMessage('Your account profile', error))
   if (!profile) throw new Error('Your portal profile is missing. Contact Trinity to complete account setup.')
   const snapshot = { profile, errors: {}, applications: [], documents: [], agreements: [], notifications: [], letters: [], schedules: [], payments: [], receipts: [], people: [], templates: [], configuration: null, officers: [], activity: [], audit: [], canApprove: false }

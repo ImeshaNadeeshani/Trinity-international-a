@@ -7,3 +7,7 @@ verify_jwt = false
 
 [functions.deliver-portal-emails]
 verify_jwt = false
+# Signup uses email/password directly without sending confirmation mail.
+# Email ownership is not verified in this mode.
+[auth.email]
+enable_confirmations = false

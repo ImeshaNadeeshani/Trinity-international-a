@@ -1,5 +1,16 @@
 # Reference-based agreement generation
 
+## Student document approval and signing flow
+
+1. The student signs in using their registered email address as the username and their password.
+2. They complete their profile, create a study application and upload NIC, passport, CV and other requested documents.
+3. Authorized staff scan/review the documents, verify identity details and approve the application. Existing agreement prerequisites, including the approved template and agreed payment schedule, still apply.
+4. Agreement generation runs independently of approval-letter creation. A letter failure is reported without preventing an otherwise eligible agreement from being generated.
+5. Successful agreement registration creates an `Agreement ready for signature` notification. Student notifications now include **Open agreement**, linking to `/student-portal/agreements`; sign-in and account permissions remain required.
+6. The student reviews the PDF, draws or uploads their signature, explicitly confirms consent and submits. The existing signature function stores the student-signed PDF and advances it to management review.
+
+Email links require deploying the updated `deliver-portal-emails` function, setting `PORTAL_ORIGIN` to the hosted HTTPS portal origin, configuring the approved email provider, applying the existing outbox setup and running the delivery worker. Without email delivery, the message remains available inside the portal. Deploy `generate-agreement` and `submit-agreement-signature` if their current versions are not already installed. Local checks do not establish that these functions or email delivery are working in production.
+
 ## What was extracted
 
 The supplied signed PDF contains 15 physical pages: an eight-page service agreement with 15 main clauses and Schedule A, a consent letter, four pages of Ireland guidance, a student application form and a signing audit report.

@@ -24,7 +24,7 @@ Deno.serve(async request => {
     const pdf = await PDFDocument.load(original), mark = await pdf.embedPng(imageBytes)
     const font = await pdf.embedFont(StandardFonts.Helvetica), bold = await pdf.embedFont(StandardFonts.HelveticaBold)
     const page = pdf.addPage([595.28, 841.89]), now = new Date().toISOString()
-    const label = student ? 'STUDENT SIGNATURE' : 'TRINITY MANAGEMENT APPROVAL'
+    const label = agreement.is_sample ? 'SAMPLE - SIGNATURE FOR TESTING ONLY' : student ? 'STUDENT SIGNATURE' : 'TRINITY MANAGEMENT APPROVAL'
     page.drawText(label, { x: 48, y: 780, size: 15, font: bold, color: rgb(0, .4, .26) })
     const lines = [agreement.reference_number, `Signer: ${profile.full_name}`, `Account: ${user.id}`, `Submitted: ${now}`, `Method: ${method}`, 'I confirm that I have reviewed the agreement and intend', 'to apply this signature to this agreement.']
     for (let i = 0; i < lines.length; i++) page.drawText(lines[i], { x: 48, y: 740 - i * 23, size: 10, font })

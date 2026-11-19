@@ -1,0 +1,28 @@
+﻿export function sampleAgreementText(profile, application) {
+  return [
+    'STUDENT SERVICE AGREEMENT - SAMPLE',
+    'SAMPLE ONLY - NOT A BINDING CONTRACT - TESTING WORKFLOW',
+    '',
+    `Student: ${profile.full_name || 'Student'}`,
+    `Student ID: ${profile.student_number || 'Not assigned'}`,
+    `Study destination: ${application.destination}`,
+    `Course: ${application.course_interest}`,
+    '',
+    '1. PURPOSE',
+    'This sample demonstrates the Trinity International student agreement and signature process after document approval. It does not replace an approved service agreement.',
+    '',
+    '2. DOCUMENT REVIEW',
+    'Trinity has recorded approval of the submitted application documents. This is not a university admission, scholarship or visa decision.',
+    '',
+    '3. FEES AND PAYMENTS',
+    'No fees are agreed or payable under this sample. A formal agreement requires approved terms and a confirmed fee schedule. Signing this sample does not unlock payments.',
+    '',
+    '4. SAMPLE SIGNATURE AND SUBMISSION',
+    'After reviewing this PDF, the student may add a signature and submit this sample to Trinity management for testing. The submitted signature and sample PDF are saved privately in the portal.',
+    '',
+    '5. MANAGEMENT REVIEW',
+    'Management can review the submitted sample. Any sample approval is for workflow testing only and does not create a binding service agreement.',
+    '',
+    'SAMPLE ONLY - SIGNATURE FOR TESTING - NO PAYMENT OBLIGATION',
+  ].join('\n')
+}

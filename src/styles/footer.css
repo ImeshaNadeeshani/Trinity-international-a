@@ -19,5 +19,7 @@
 .footer-legal { display: flex; flex-wrap: wrap; gap: 18px; }
 .footer-legal a { color: #a9c8b8; transition: color .2s ease; }
 .footer-legal a:hover { color: #fff; }
+.footer-staff-access { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.footer-staff-access:focus-visible { outline: 2px solid #d8eee2; outline-offset: 4px; border-radius: 2px; }
 @media (max-width: 760px) { .footer { padding-top: 50px; } .footer-grid { grid-template-columns: 1fr 1fr; gap: 42px 24px; } .footer-brand { grid-column: 1 / -1; max-width: none; } .footer-logo { width: 112px; height: 112px; }.footer-logo img { width: 104px; height: 104px; }.footer-bottom { flex-direction: column; } }
 @media (max-width: 440px) { .footer-grid { grid-template-columns: 1fr; } }

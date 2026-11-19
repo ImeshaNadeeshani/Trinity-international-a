@@ -1,16 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { invokePortal } from '../lib/portalFunctions'
 
-export function ExtractedDetails({ documents, uploadedDocument, profile, onSaved }) {
+export function ExtractedDetails({ documents, profile, onSaved }) {
   const [reading, setReading] = useState('')
   const [draft, setDraft] = useState(null)
   const [message, setMessage] = useState('')
-  useEffect(() => {
-    if (uploadedDocument) read(uploadedDocument)
-    // Run only for a newly uploaded document; edits must not restart extraction.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [uploadedDocument?.id])
   async function read(doc) {
     setReading(doc.id); setMessage(''); setDraft(null)
     try {
@@ -20,7 +15,7 @@ export function ExtractedDetails({ documents, uploadedDocument, profile, onSaved
       }
       const result = await invokePortal('extract-student-document', { document_id: doc.id })
       setDraft({ document_id: doc.id, manual_review_required: result.manual_review_required, ...result.fields, date_of_birth: result.fields.date_of_birth || profile.date_of_birth || '', nationality: result.fields.nationality || profile.nationality || '', full_name: result.fields.full_name || profile.full_name || '', identification_number: result.fields.identification_number || result.fields.passport_number || profile.identification_number || '', residential_address: result.fields.residential_address || profile.residential_address || '' })
-    } catch (error) { setMessage(error.message) }
+    } catch (error) { setMessage(error.message?.includes('Failed to send a request')?'Your uploaded file remains saved. Automatic document reading is unavailable. Complete My Profile manually.':error.message) }
     finally { setReading('') }
   }
   async function save(event) {
@@ -32,7 +27,7 @@ export function ExtractedDetails({ documents, uploadedDocument, profile, onSaved
     } catch (error) { setMessage(error.message) }
     finally { setReading('') }
   }
-  return <div className="portal-card portal-form-card"><h2>Read details from your documents</h2><p>Scan your NIC, passport or supporting document, then check the details before saving them to your profile.</p>
+  return <div className="portal-card portal-form-card"><h2>Read details from your documents (optional)</h2><p>Your upload is saved independently of this reader. You can complete My Profile manually, or request automatic reading below when it is configured.</p>
     {documents.filter(d => !['replaced', 'rejected'].includes(d.status)).map(doc => <article className="portal-document" key={doc.id}><span className="portal-doc-info"><strong>{doc.file_name}</strong><small>{doc.scan_status === 'clean' ? 'Ready to read' : 'Security scan required'}</small></span><button className="portal-outline compact" disabled={!!reading} onClick={() => read(doc)}>{reading === doc.id ? 'Reading…' : 'Read / retry details'}</button></article>)}
     {!documents.length && <p>Upload a document above to begin.</p>}
     {message && <p role="status" className="portal-pending">{message}</p>}

@@ -1,3 +1,4 @@
+import StudyApplicationFields from '../components/portal/StudyApplicationFields'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, ChevronRight, CircleAlert, FileText, LogOut, ShieldCheck, UserRound, Bell, LockKeyhole, LayoutDashboard, FolderOpen, CreditCard, Settings, Plane, GraduationCap } from 'lucide-react'
@@ -28,6 +29,7 @@ const categories = [['nic_front','NIC - Front'],['nic_back','NIC - Back'],['pass
 
 function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
   const [session, setSession] = useState(null)
+  const [sessionAccepted, setSessionAccepted] = useState(staffMode)
   const [profile, setProfile] = useState(null)
   const [applications, setApplications] = useState([])
   const [documents, setDocuments] = useState([])
@@ -76,6 +78,7 @@ function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
       if (!active) return
       const nextId = value?.user?.id || null
       if (accountId.current !== nextId) { accountId.current = nextId; loadVersion.current++; setProfile(null) }
+      if (!value) setSessionAccepted(staffMode)
       setSession(value); setAuthReady(true)
     }
     const { data: listener } = supabase.auth.onAuthStateChange((event, value) => {
@@ -91,7 +94,7 @@ function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
     // Invalidate the latest request counter; this ref is not a DOM node.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     return () => { active = false; loadVersion.current++; listener.subscription.unsubscribe() }
-  }, [])
+  }, [staffMode])
 
   useEffect(() => {
     setProfile(null); setApplications([]); setDocuments([]); setAgreements([]); setApprovalLetters([])
@@ -100,14 +103,14 @@ function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
     setActivityEvents([]); setAuditEvents([]); setApprovalOfficers([]); setCanApproveApplications(false)
     setUploadedDocument(null); setSelectedApplication(''); setSectionErrors({}); setPaymentError('')
     setSelectedTemplate(''); setTemplateDraft({name:'',body:''}); setView(defaultView)
-    if (session?.user?.id) loadPortal()
+    if (session?.user?.id && sessionAccepted) loadPortal()
     else setLoadingPortal(false)
     // Invalidate any request still running when this account changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     return () => { loadVersion.current++ }
   // Token refreshes must not clear an unfinished profile or signature.
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session?.user?.id, staffMode])
+  }, [session?.user?.id, staffMode, sessionAccepted])
 
   useEffect(() => {
     if(!session)return
@@ -185,6 +188,7 @@ function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
         ? await supabase.auth.signUp({ email: authFields.email.trim(), password: authFields.password, options: { emailRedirectTo: `${window.location.origin}/student-portal`, data: { first_name: authFields.firstName.trim(), last_name: authFields.secondName.trim(), second_name: authFields.secondName.trim(), full_name: fullName } } })
         : await supabase.auth.signInWithPassword({ email: authFields.email.trim(), password: authFields.password })
       if (result.error) throw result.error
+      if (result.data.session) { setSessionAccepted(true); setAuthFields(fields=>({...fields,password:''})) }
       if (authMode === 'signup') {
         if (result.data.user && result.data.session) await supabase.from('portal_profiles').update({ full_name: fullName }).eq('id', result.data.user.id)
         setNotice(result.data.session ? 'Your account is ready. Complete your profile to begin.' : 'Check your email to confirm your account, then sign in.')
@@ -356,11 +360,11 @@ function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
   const staffNavigation=profile?.role==='legal_reviewer'?[['management','Business and refund review',LockKeyhole],['templates','Agreement templates',FileText]]:[['overview','Dashboard',LayoutDashboard],['students','Students',UserRound],['agreements','Agreements',FileText],...(canApproveApplications?[['generation','Generate agreements',FileText]]:[]),['documents','Document Review',ShieldCheck],...(canApproveApplications?[['letter-messages','Approval Letters',FileText]]:[]),['notifications','Messages',Bell],['history','Approval history',Bell],...(profile?.role==='admin'?[['management','Management settings',Settings],['templates','Agreement templates',FileText],['payments','Payment schedules',CreditCard],['team','Team accounts',UserRound],['audit','Activity logs',ShieldCheck]]:[]),...(['head','delegate','signatory'].includes(profile?.role)?[['signing','Agreement signing',LockKeyhole]]:[])]
   const navigation=staffUser?staffNavigation:[['overview','Dashboard',LayoutDashboard],['profile','My Profile',UserRound],['documents','Upload Documents',FolderOpen],['agreements','Agreements',FileText],['application','Application',GraduationCap],['notifications','Notifications',Bell]]
 
-  return <main className={`portal-page ${session ? staffMode ? 'portal-staff-process' : 'portal-student-process' : ''}`}>
-    {session && <header className="portal-topbar"><Link to="/" className="portal-brand"><img src="/trinity-logo.jpeg" alt="Trinity International"/><span>{staffMode?'Trinity Management Panel':'Student Services Portal'}</span></Link><Link to="/" className="portal-back"><ArrowLeft size={16}/> Main website</Link></header>}
+  return <main className={`portal-page ${session && sessionAccepted ? staffMode ? 'portal-staff-process' : 'portal-student-process' : ''}`}>
+    {session && sessionAccepted && <header className="portal-topbar"><Link to="/" className="portal-brand"><img src="/trinity-logo.jpeg" alt="Trinity International"/><span>{staffMode?'Trinity Management Panel':'Student Services Portal'}</span></Link><Link to="/" className="portal-back"><ArrowLeft size={16}/> Main website</Link></header>}
     {!authReady ? <section className="portal-card portal-config" role="status"><h1>Checking your session...</h1></section>
       : recoveryMode ? <section className="portal-auth"><div className="portal-auth-visual"><Link to="/" className="portal-auth-logo"><img src="/trinity-logo.jpeg" alt="Trinity International"/><span>TRINITY<small>INTERNATIONAL</small></span></Link><div className="portal-auth-message"><span className="portal-auth-kicker">SECURE ACCOUNT ACCESS</span><h1>Choose a new password.</h1><p>Update your password to return to the Trinity student portal.</p></div></div><div className="portal-auth-panel"><form className="portal-card portal-auth-card" onSubmit={signIn}><span className="portal-eyebrow">PASSWORD RESET</span><h2>Set a new password</h2><p className="portal-muted">Choose a password with at least 8 characters.</p><label>New password<input required type="password" minLength="8" autoComplete="new-password" placeholder="Enter a new password" value={authFields.password} onChange={e=>setAuthFields({...authFields,password:e.target.value})}/></label>{error&&<p className="portal-error">{error}</p>}{notice&&<p className="portal-notice">{notice}</p>}<button className="portal-primary" disabled={busy||!session}>{!session?'Reset session unavailable':'Save new password'}</button>{!session && <><p className="portal-muted">This reset link may have expired. Request a new password reset email.</p><button type="button" className="portal-text-button" onClick={()=>{setRecoveryMode(false);setAuthMode('forgot');setAuthFields({...authFields,password:''});window.history.replaceState({},document.title,window.location.pathname)}}>Request a new reset link</button></>}</form></div></section>
-      : !session ? <section className={`portal-auth portal-login-reference ${staffMode ? 'portal-management-login' : ''}`}>
+      : (!session || !sessionAccepted) ? <section className={`portal-auth portal-login-reference ${staffMode ? 'portal-management-login' : ''}`}>
         <div className="portal-auth-visual">
           <Link to="/" className="portal-auth-logo"><img src="/trinity-logo.jpeg" alt="Trinity International"/><span>TRINITY<small>INTERNATIONAL</small></span></Link>
           <div className="portal-auth-message"><span className="portal-auth-kicker">YOUR GLOBAL EDUCATION JOURNEY STARTS HERE</span><h1>Start your study abroad journey with confidence.</h1><p>Stay connected to your application, documents and Trinity support in one secure place.</p></div>
@@ -368,6 +372,7 @@ function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
         </div>
         <div className="portal-auth-panel"><Link to="/" className="portal-auth-home"><ArrowLeft size={15}/> Main website</Link>
           <form className="portal-card portal-auth-card" onSubmit={signIn}>{staffMode&&<Link to="/" className="management-login-brand"><PortalBrand/></Link>}<span className="portal-eyebrow">{staffMode ? 'TRINITY STAFF ACCESS' : 'STUDENT PORTAL'}</span><h2>{authMode === 'signup' ? 'Create your account' : authMode==='forgot' ? 'Reset your password' : staffMode ? 'Management Panel' : 'Student Portal'}</h2><p className="portal-muted">{authMode === 'signup' ? 'Create an account to start your study application.' : authMode==='forgot' ? 'Enter your account email and we will send a reset link.' : staffMode ? 'Administrative access for Trinity staff.' : 'Your study abroad journey in one place.'}</p>
+            {!staffMode&&session&&!sessionAccepted&&authMode==='login'&&<div className="portal-saved-session"><p>A previous account is still signed in: <strong>{session.user.email}</strong></p><button type="button" className="portal-outline" disabled={busy} onClick={()=>setSessionAccepted(true)}>Continue with this account</button><p>To use another account, enter its email and password below.</p></div>}
             {staffMode&&authMode==='login'&&<div className="management-test-access"><Link className="portal-primary" to="/staff-portal/preview">Open Test Portal - No Email Required</Link><p>Temporary design preview with sample data. No real records are changed.</p></div>}
             {authMode === 'signup' && <><label>First name<input required autoComplete="given-name" value={authFields.firstName} onChange={e => setAuthFields({...authFields,firstName:e.target.value})}/></label><label>Second name<input required autoComplete="family-name" value={authFields.secondName} onChange={e => setAuthFields({...authFields,secondName:e.target.value})}/></label></>}
             <label>Username (email address)<input required type="email" autoComplete="username" placeholder="you@example.com" value={authFields.email} onChange={e => setAuthFields({...authFields,email:e.target.value})}/></label>
@@ -388,7 +393,7 @@ function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
           <div className="portal-action-row"><button className="portal-outline compact" disabled={loadingPortal || busy} onClick={loadPortal}>{loadingPortal?'Refreshing...':'Refresh portal'}</button></div>
           {Object.keys(sectionErrors).length>0 && <div className="portal-error" role="alert"><strong>Some information could not be loaded.</strong>{Object.entries(sectionErrors).map(([key,message])=><p key={key}>{message}</p>)}</div>}
           {!staffUser && view==='overview' && <>{notifications[0]&&<div className="portal-card student-latest-notice"><Bell size={21}/><div><strong>{notifications[0].title}</strong><p>{notifications[0].message}</p></div><button className="portal-outline compact" onClick={()=>setView('notifications')}>View notifications</button></div>}<div className="portal-stat-grid"><article><span>Application</span><strong>{applications[0]?.status?.replaceAll('_',' ')||'Not started'}</strong></article><article><span>Documents</span><strong>{documents.filter(d=>d.status==='verified').length} approved</strong></article><article><span>Agreement</span><strong>{agreements.find(a=>a.status!=='voided')?.status.replaceAll('_',' ')||'Not generated'}</strong></article><article><span>Payments</span><strong>{paymentError?'Unavailable':`${payments.filter(p=>p.status==='successful').length} successful`}</strong></article><article><span>Messages</span><strong>{notifications.filter(n=>!n.read_at).length} unread</strong></article></div><WorkflowProgress onNavigate={setView} profile={profile} application={applications[0]} documents={documents} agreements={agreements} approvalLetters={approvalLetters} payments={payments}/><div className="portal-card"><h2>Your next steps</h2><div className="portal-action-row"><button className="portal-primary" onClick={()=>setView('profile')}>Complete profile</button><button className="portal-outline" onClick={()=>setView('application')}>My application</button><button className="portal-outline" onClick={()=>setView('documents')}>Upload documents</button><button className="portal-outline" onClick={()=>setView('agreements')}>Review agreement</button></div></div></>}
-          {!staffUser && view==='application' && <><div className="portal-action-row"><button className="portal-outline" onClick={()=>setView('status')}>Application status</button><button className="portal-outline" onClick={()=>setView('letters')}>Approval letters</button><button className="portal-outline" onClick={()=>setView('payments')}>Payments</button></div><WorkflowProgress onNavigate={setView} profile={profile} application={applications[0]} documents={documents} agreements={agreements} approvalLetters={approvalLetters} payments={payments}/><div className="portal-card portal-form-card"><h2>{applications.length?'Add a study application':'Your study application'}</h2><p>Share your study preferences to create your application record.</p><form onSubmit={saveApplication}><label>Preferred destination<select required value={form.destination} onChange={e=>setForm({...form,destination:e.target.value})}><option value="">Choose a destination</option>{['Australia','Canada','Ireland','Malaysia','New Zealand','Singapore','United Kingdom','United States'].map(x=><option key={x}>{x}</option>)}</select></label><label>Highest education completed<input required value={form.education_level} onChange={e=>setForm({...form,education_level:e.target.value})} placeholder="For example, Advanced Level"/></label><label>Course or subject of interest<input required value={form.course_interest} onChange={e=>setForm({...form,course_interest:e.target.value})} placeholder="For example, Business Management"/></label><label>Intake<input required value={form.intake} onChange={e=>setForm({...form,intake:e.target.value})} placeholder="For example, September 2027"/></label><label>University / institution<input value={form.institution} onChange={e=>setForm({...form,institution:e.target.value})}/></label><button className="portal-primary" disabled={busy}>Save application <ChevronRight size={16}/></button></form></div></>}
+          {!staffUser && view==='application' && <><div className="portal-action-row"><button className="portal-outline" onClick={()=>setView('status')}>Application status</button><button className="portal-outline" onClick={()=>setView('letters')}>Approval letters</button><button className="portal-outline" onClick={()=>setView('payments')}>Payments</button></div><WorkflowProgress onNavigate={setView} profile={profile} application={applications[0]} documents={documents} agreements={agreements} approvalLetters={approvalLetters} payments={payments}/><div className="portal-card portal-form-card"><h2>{applications.length?'Add a study application':'Your study application'}</h2><p>Share your study preferences to create your application record.</p><form onSubmit={saveApplication}><StudyApplicationFields form={form} onChange={setForm}/><button className="portal-primary" disabled={busy}>Save application <ChevronRight size={16}/></button></form></div></>}
           {!staffUser && view==='documents' && <><StudentDocuments onCreateApplication={()=>{setError('');setNotice('');setView('application');window.scrollTo({top:0,behavior:'smooth'})}} applications={applications} selectedApplication={selectedApplication} onSelectApplication={setSelectedApplication} documents={documents} categories={categories} busy={busy} error={error} notice={notice} onUpload={uploadDocument} onOpen={openPrivateFile}/><ExtractedDetails documents={documents} uploadedDocument={uploadedDocument} profile={profile} onSaved={loadPortal}/></>}
           {!staffUser && view==='profile' && <ProfileForm key={profile.id} profile={profile} email={session.user.email} photographPath={documents.find(doc=>doc.category==='photograph' && doc.status!=='replaced' && doc.scan_status==='clean')?.storage_path} onSaved={loadPortal}/>}
           {!staffUser && view==='status' && <WorkflowProgress onNavigate={setView} profile={profile} application={applications.find(a=>a.id===selectedApplication)||applications[0]} documents={documents} agreements={agreements} approvalLetters={approvalLetters} payments={payments}/>}

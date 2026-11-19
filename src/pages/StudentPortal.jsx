@@ -69,6 +69,19 @@ function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
   useEffect(() => setView(defaultView), [defaultView])
   const [selectedApplication, setSelectedApplication] = useState('')
   const [authFields, setAuthFields] = useState({ firstName: '', secondName: '', email: '', password: '' })
+  const [credentialEditing, setCredentialEditing] = useState({ email: false, password: false })
+  useEffect(() => {
+    if (sessionAccepted || recoveryMode) return
+    const clearLogin = () => {
+      setAuthFields(fields => ({ ...fields, email: '', password: '' }))
+      setCredentialEditing({ email: false, password: false })
+      setShowPassword(false)
+    }
+    clearLogin()
+    window.addEventListener('pageshow', clearLogin)
+    return () => window.removeEventListener('pageshow', clearLogin)
+  }, [sessionAccepted, recoveryMode, authMode])
+
   const [form, setForm] = useState({ destination: '', education_level: '', course_interest: '', intake:'', institution:'' })
 
   useEffect(() => {
@@ -161,6 +174,24 @@ function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
     // Refresh only on passive student views, preserving profile and signature editing.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [staffMode, session?.user?.id, profile?.role, view, busy, loadingPortal])
+
+  const readingNotifications = useRef(new Set())
+  useEffect(() => {
+    const userId = session?.user?.id
+    if (!supabase || !sessionAccepted || !userId || view !== 'notifications' || loadingPortal || document.visibilityState !== 'visible') return
+    const ids = notifications.filter(item => !item.read_at && item.student_id === userId && !readingNotifications.current.has(item.id)).map(item => item.id)
+    if (!ids.length) return
+    const pending = readingNotifications.current
+    ids.forEach(id => pending.add(id))
+    supabase.from('student_notifications').update({ read_at: new Date().toISOString() }).eq('student_id', userId).in('id', ids).is('read_at', null).select('id,read_at')
+      .then(({ data, error: readError }) => {
+        if (accountId.current !== userId) return
+        if (readError) { setError('Unable to mark notifications as read. Please refresh and try again.'); return }
+        const read = new Map((data || []).map(item => [item.id, item.read_at]))
+        setNotifications(items => items.map(item => read.has(item.id) ? { ...item, read_at: read.get(item.id) } : item))
+      }).catch(() => { if (accountId.current === userId) setError('Unable to mark notifications as read. Please refresh and try again.') })
+      .finally(() => ids.forEach(id => pending.delete(id)))
+  }, [session?.user?.id, sessionAccepted, view, loadingPortal, notifications])
 
   async function signIn(event) {
     event.preventDefault(); setBusy(true); setError(''); setNotice('')
@@ -363,7 +394,7 @@ function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
   return <main className={`portal-page ${session && sessionAccepted ? staffMode ? 'portal-staff-process' : 'portal-student-process' : ''}`}>
     {session && sessionAccepted && <header className="portal-topbar"><Link to="/" className="portal-brand"><img src="/trinity-logo.jpeg" alt="Trinity International"/><span>{staffMode?'Trinity Management Panel':'Student Services Portal'}</span></Link><Link to="/" className="portal-back"><ArrowLeft size={16}/> Main website</Link></header>}
     {!authReady ? <section className="portal-card portal-config" role="status"><h1>Checking your session...</h1></section>
-      : recoveryMode ? <section className="portal-auth"><div className="portal-auth-visual"><Link to="/" className="portal-auth-logo"><img src="/trinity-logo.jpeg" alt="Trinity International"/><span>TRINITY<small>INTERNATIONAL</small></span></Link><div className="portal-auth-message"><span className="portal-auth-kicker">SECURE ACCOUNT ACCESS</span><h1>Choose a new password.</h1><p>Update your password to return to the Trinity student portal.</p></div></div><div className="portal-auth-panel"><form className="portal-card portal-auth-card" onSubmit={signIn}><span className="portal-eyebrow">PASSWORD RESET</span><h2>Set a new password</h2><p className="portal-muted">Choose a password with at least 8 characters.</p><label>New password<input required type="password" minLength="8" autoComplete="new-password" placeholder="Enter a new password" value={authFields.password} onChange={e=>setAuthFields({...authFields,password:e.target.value})}/></label>{error&&<p className="portal-error">{error}</p>}{notice&&<p className="portal-notice">{notice}</p>}<button className="portal-primary" disabled={busy||!session}>{!session?'Reset session unavailable':'Save new password'}</button>{!session && <><p className="portal-muted">This reset link may have expired. Request a new password reset email.</p><button type="button" className="portal-text-button" onClick={()=>{setRecoveryMode(false);setAuthMode('forgot');setAuthFields({...authFields,password:''});window.history.replaceState({},document.title,window.location.pathname)}}>Request a new reset link</button></>}</form></div></section>
+      : recoveryMode ? <section className="portal-auth"><div className="portal-auth-visual"><Link to="/" className="portal-auth-logo"><img src="/trinity-logo.jpeg" alt="Trinity International"/><span>TRINITY<small>INTERNATIONAL</small></span></Link><div className="portal-auth-message"><span className="portal-auth-kicker">SECURE ACCOUNT ACCESS</span><h1>Choose a new password.</h1><p>Update your password to return to the Trinity student portal.</p></div></div><div className="portal-auth-panel"><form className="portal-card portal-auth-card" autoComplete="off" onSubmit={signIn}><span className="portal-eyebrow">PASSWORD RESET</span><h2>Set a new password</h2><p className="portal-muted">Choose a password with at least 8 characters.</p><label>New password<input required type="password" minLength="8" autoComplete="new-password" placeholder="Enter a new password" value={authFields.password} onChange={e=>setAuthFields({...authFields,password:e.target.value})}/></label>{error&&<p className="portal-error">{error}</p>}{notice&&<p className="portal-notice">{notice}</p>}<button className="portal-primary" disabled={busy||!session}>{!session?'Reset session unavailable':'Save new password'}</button>{!session && <><p className="portal-muted">This reset link may have expired. Request a new password reset email.</p><button type="button" className="portal-text-button" onClick={()=>{setRecoveryMode(false);setAuthMode('forgot');setAuthFields({...authFields,password:''});window.history.replaceState({},document.title,window.location.pathname)}}>Request a new reset link</button></>}</form></div></section>
       : (!session || !sessionAccepted) ? <section className={`portal-auth portal-login-reference ${staffMode ? 'portal-management-login' : ''}`}>
         <div className="portal-auth-visual">
           <Link to="/" className="portal-auth-logo"><img src="/trinity-logo.jpeg" alt="Trinity International"/><span>TRINITY<small>INTERNATIONAL</small></span></Link>
@@ -372,11 +403,10 @@ function StudentPortal({ staffMode = false, defaultView = 'overview' }) {
         </div>
         <div className="portal-auth-panel"><Link to="/" className="portal-auth-home"><ArrowLeft size={15}/> Main website</Link>
           <form className="portal-card portal-auth-card" onSubmit={signIn}>{staffMode&&<Link to="/" className="management-login-brand"><PortalBrand/></Link>}<span className="portal-eyebrow">{staffMode ? 'TRINITY STAFF ACCESS' : 'STUDENT PORTAL'}</span><h2>{authMode === 'signup' ? 'Create your account' : authMode==='forgot' ? 'Reset your password' : staffMode ? 'Management Panel' : 'Student Portal'}</h2><p className="portal-muted">{authMode === 'signup' ? 'Create an account to start your study application.' : authMode==='forgot' ? 'Enter your account email and we will send a reset link.' : staffMode ? 'Administrative access for Trinity staff.' : 'Your study abroad journey in one place.'}</p>
-            {!staffMode&&session&&!sessionAccepted&&authMode==='login'&&<div className="portal-saved-session"><p>A previous account is still signed in: <strong>{session.user.email}</strong></p><button type="button" className="portal-outline" disabled={busy} onClick={()=>setSessionAccepted(true)}>Continue with this account</button><p>To use another account, enter its email and password below.</p></div>}
             {staffMode&&authMode==='login'&&<div className="management-test-access"><Link className="portal-primary" to="/staff-portal/preview">Open Test Portal - No Email Required</Link><p>Temporary design preview with sample data. No real records are changed.</p></div>}
             {authMode === 'signup' && <><label>First name<input required autoComplete="given-name" value={authFields.firstName} onChange={e => setAuthFields({...authFields,firstName:e.target.value})}/></label><label>Second name<input required autoComplete="family-name" value={authFields.secondName} onChange={e => setAuthFields({...authFields,secondName:e.target.value})}/></label></>}
-            <label>Username (email address)<input required type="email" autoComplete="username" placeholder="you@example.com" value={authFields.email} onChange={e => setAuthFields({...authFields,email:e.target.value})}/></label>
-            {authMode !== 'forgot' && <label>Password<div className="portal-password-field"><input required type={showPassword ? 'text' : 'password'} minLength={authMode === 'signup' ? 8 : undefined} autoComplete={authMode === 'signup' ? 'new-password' : 'current-password'} placeholder="Enter your password" value={authFields.password} onChange={e => setAuthFields({...authFields,password:e.target.value})}/><button type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} aria-pressed={showPassword} onClick={()=>setShowPassword(!showPassword)}>{showPassword ? 'Hide' : 'Show'}</button></div></label>}
+            <label>Username (email address)<input required type="email" name="portal-email-entry" autoComplete="off" readOnly={!credentialEditing.email} onFocus={() => setCredentialEditing(fields => ({ ...fields, email: true }))} placeholder="you@example.com" value={authFields.email} onChange={e => setAuthFields({...authFields,email:e.target.value})}/></label>
+            {authMode !== 'forgot' && <label>Password<div className="portal-password-field"><input required type={showPassword ? 'text' : 'password'} minLength={authMode === 'signup' ? 8 : undefined} name="portal-password-entry" autoComplete={authMode === 'signup' ? 'new-password' : 'off'} readOnly={!credentialEditing.password} onFocus={() => setCredentialEditing(fields => ({ ...fields, password: true }))} placeholder="Enter your password" value={authFields.password} onChange={e => setAuthFields({...authFields,password:e.target.value})}/><button type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} aria-pressed={showPassword} onClick={()=>setShowPassword(!showPassword)}>{showPassword ? 'Hide' : 'Show'}</button></div></label>}
             {error && <p className="portal-error">{error}</p>}{notice && <p className="portal-notice">{notice}</p>}
             <button className="portal-primary" disabled={busy}>{busy ? 'Please wait…' : authMode === 'signup' ? 'Create student account' : authMode==='forgot' ? 'Send reset link' : 'Log In'}</button>
             {authMode==='login' && <button type="button" className="portal-text-button portal-forgot-button" onClick={()=>{setAuthMode('forgot');setError('');setNotice('')}}>Forgot password?</button>}

@@ -13,7 +13,9 @@ Deno.serve(async request=>{
   if(profile.role!=='student'||!app)return json({error:'Open your own student application.'},403)
   const {data:letter,error:letterError}=await db.from('approval_letters').select('id').eq('application_id',app.id).maybeSingle()
   if(letterError)throw Error('Unable to read the approval letter. Please contact Trinity support.');
-  if(!letter)return json({error:'Management must issue your approval letter before generating this sample.'},409)
+  const {data:approval,error:approvalError}=await db.from('student_notifications').select('id').eq('approved_application_id',app.id).eq('student_id',user.id).limit(1)
+  if(approvalError)throw Error('Unable to check document approval.');
+  if(!letter&&!approval?.length)return json({error:'Management must send your approval message before generating this sample.'},409)
   const {data:existing}=await db.from('student_agreements').select('id').eq('application_id',app.id).eq('is_sample',true).neq('status','voided').maybeSingle()
   if(existing)return json({agreement_id:existing.id})
   const {data:docs,error:docError}=await db.from('student_documents').select('status,scan_status').eq('application_id',app.id).neq('status','replaced')

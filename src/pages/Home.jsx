@@ -1,3 +1,4 @@
+import futureCareerBackground from '../assets/images/future-career-background.png'
 import { useEffect, useRef, useState } from 'react'
 import {
   ArrowRight,
@@ -203,15 +204,7 @@ function Home({ onBookConsultation }) {
               ) : activeSlide === 2 ? (
                 <img className="award-winning-hero-image" src={awardWinningHero} alt="Golden award trophy representing Trinity International's award-winning student visa consultancy" />
               ) : (
-                <>
-                  <video className="future-career-video-backdrop" autoPlay muted loop playsInline aria-hidden="true">
-                    <source src="/videos/future-career-video-3.mp4" type="video/mp4" />
-                  </video>
-                  <video className="future-career-hero-video" autoPlay muted loop playsInline aria-label="Student exploring future career opportunities">
-                    <source src="/videos/future-career-video-3.mp4" type="video/mp4" />
-                  </video>
-                  <span className="future-career-watermark-cover" aria-hidden="true" />
-                </>
+                <img className="future-career-background-image" src={futureCareerBackground} alt="Trinity student imagining careers in medicine, nursing, engineering, technology and hospitality" />
               )}
             </div>
           </div>

@@ -220,7 +220,7 @@
 
 @media (max-width: 680px) {
   .hero-slide-2 .hero-image-wrap { background: #0a4f9e url('../assets/images/findmyuni-campus-hero.png') center 38% / cover no-repeat; }
-  .hero-slide-4 .hero-image-wrap { background: #172925 url('../assets/images/future-career-mobile-v2.png') center top / cover no-repeat; }
+  .hero-slide-4 .hero-image-wrap { background: #073e70; }
   .hero-slide-4 .future-career-video-backdrop,
   .hero-slide-4 .future-career-hero-video { display: none; }
   :is(.hero-slide-1, .hero-slide-2, .hero-slide-4) .hero-copy { right: auto; left: 7%; width: min(86%, 410px); transform: none; }
@@ -262,3 +262,15 @@
   .award-proof-gallery { top: 300px; left: 12px; gap: 7px; width: calc(100% - 24px); height: 225px; }
 }
 @media (prefers-reduced-motion: reduce) { .advisory-panel, .advisory-visible .advisory-panel, .why-card, .why-visible .why-card { opacity: 1; animation: none; transform: none; transition: none; } }
+/* Static career artwork replaces both video layers. */
+.hero-slide-4 .hero-image-wrap{background:#073e70}
+.hero-slide-4 .hero-image-wrap .future-career-background-image{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;object-position:center;mix-blend-mode:normal}
+.hero-slide-4 .hero-image-wrap::after{background:linear-gradient(to top,rgba(2,29,56,.35),transparent 45%)}
+@media(min-width:681px){
+ .hero-slide-4 .hero-copy{top:7%;bottom:auto;left:5%;right:auto;width:min(540px,38%);padding:20px 24px;transform:none;animation:none;background:rgba(4,38,69,.65)}
+ .hero-slide-4 .hero-copy h1{font-size:clamp(1.6rem,2.6vw,2.6rem)}
+}
+@media(max-width:680px){
+ .hero-slide-4 .hero-image-wrap .future-career-background-image{object-fit:contain;object-position:center top}
+ .hero-slide-4 .hero-copy{background:rgba(4,38,69,.9)}
+}

@@ -45,6 +45,7 @@ function Footer({ onBookConsultation }) {
       </div>
       <div className="container footer-bottom">
         <span>&copy; 2026 Trinity International. All rights reserved.</span>
+        <span className="footer-credit">Web Design and Development by ACTS Global (Pvt) Ltd</span>
         <nav className="footer-legal" aria-label="Legal and staff access"><Link to="/privacy-policy">Privacy Policy</Link><Link to="/terms-of-service">Terms of Service</Link><Link className="footer-staff-access" to="/staff-portal"><LockKeyhole size={13} aria-hidden="true"/>Staff Access</Link><Link className="footer-staff-access" to="/staff-portal/preview">Management Preview</Link></nav>
       </div>
     </footer>

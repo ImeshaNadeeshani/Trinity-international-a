@@ -1,3 +1,4 @@
+import { educationOptions } from '../data/education'
 import { ArrowRight, CalendarDays, FileUp, GraduationCap, ShieldCheck, X } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { insertSubmission, uploadEligibilityDocument } from '../lib/supabase'
@@ -193,7 +194,7 @@ function EligibilityCheck() {
 
             <section className="eligibility-section">
               <header><span>02</span><div><h2>Educational Background</h2><p>Share your most recent qualification.</p></div></header>
-              <RadioGroup legend="Highest Level of Education Completed" name="education_level" required options={['O/L / GCSE', 'A/L / High School', 'Foundation', 'Diploma', 'Higher National Diploma / HND', 'Bachelor’s Degree', 'Postgraduate Diploma', 'Master’s Degree', 'Other']} />
+              <RadioGroup legend="Highest Level of Education Completed" name="education_level" required options={educationOptions} />
               <div className="eligibility-grid">
                 <Field label="Qualification / Course Name" name="qualification" required maxLength="150" />
                 <Field label="Institution / University" name="institution" required maxLength="150" />

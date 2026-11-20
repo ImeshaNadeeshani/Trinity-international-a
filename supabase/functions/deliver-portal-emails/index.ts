@@ -25,8 +25,8 @@ Deno.serve(async request => {
     const { data: recipient } = await db.from('portal_profiles').select('role').eq('id', notice.student_id).single()
     if (!recipient) continue
     const student = recipient.role === 'student'
-    const agreementUpdate = /agreement|signature/i.test(notice.title || '')
-    const link = `${portalOrigin}${!student ? '/staff-portal' : agreementUpdate ? '/student-portal/agreements' : '/student-portal'}`
+    const agreementUpdate = !!notice.approved_application_id || /agreement|signature/i.test(notice.title || '')
+    const link = `${portalOrigin}${!student ? '/staff-portal' : agreementUpdate ? '/student-portal/agreements'+(notice.approved_application_id?'?application='+notice.approved_application_id:'') : '/student-portal'}`
     const text = `${notice.message}\n\n${!student ? 'Sign in to the Trinity management portal' : agreementUpdate ? 'Review your agreement and sign in securely' : 'Sign in to view your application'}:\n${link}\n\nAccount authentication is required to access private documents.`
     try {
       const response = await fetch('https://api.resend.com/emails', { method: 'POST', headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', 'Idempotency-Key': `portal-${job.id}` }, body: JSON.stringify({ from, to: [auth.user.email], subject: notice.title, text }), signal: AbortSignal.timeout(15000) })
